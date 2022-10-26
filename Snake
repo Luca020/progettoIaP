@@ -8,22 +8,22 @@ char board[16][16];
 void voidBoard(char* b, int row, int col){
     for(int i = 0; i < row; i++){
         for(int j = 0; j < col; j++){
-            b[i*col + j] = ' '; 
+            b[i*col + j] = ' ';
         }
     }
 }
 
 void Labirint(char* b, int row, int col){
-   for(int i = 0; i < row; i++){
+    for(int i = 0; i < row; i++){
         for(int j = 0; j < col; j++){
             if((i == 0) || (j == 0 && i >=3) || (i == 15) || (j == 15 && i <= 13)||(i >= 1 && i <= 6 && j == 5) || (i>=9 && i<= 15 && j == 10))
-                b[i*col + j] = '#'; 
+                b[i*col + j] = '#';
             else if((i >= 10 && i <= 12 && j == 9) || (i == 4 && j>=11 && j<=13))
                 b[i*col + j] = '$';
             else if(i == 14 && j == 7)
                 b[i*col + j] = '!';
             else if((i >= 1 && i <= 2 && j == 0) || (i >= 12 && i >=14 && j == 15))
-                b[i*col + j] = ' ';              
+                b[i*col + j] = ' ';
         }
     }
 }
@@ -41,83 +41,65 @@ void printLabirint(char* b, int row, int col){
 void start(char* b, int row, int col){
 
     char snake = '.';
-  
+
     for(int i = 0; i < row; i++){
         for(int j = 0; j < col; j++){
             if(j == 0 && b[i*col + j] == ' ' && b[(i+1)*col + j] != ' ')
                 b[i*col + j] = snake;
         }
     }
-} 
+}
 
 void Moving(char* b, int row, int col){
-    
+
     char move;
     int flag = 0;
-    
+    int currentPosition = 128;
     do{
         scanf(" %c", &move);
         switch(move){
-            
             case 'N':
-                int N = 0;
-                for(int i = 0; i < row; i++){
-                    for(int j = 0; j < col; j++){
-                        if(b[i*col + j] == '.' && b[(i-1)*col + j] == ' ' && b[i*col + j+1] != '.'&& N == 0){
-                            b[(i-1)*col + j] = '.';
-                            N = 1;
-                            printLabirint(&board[0][0], 16, 16);
-                        }
-                    }
-            
+                if (b[currentPosition -16] == ' '){
+                    b[currentPosition] = '.';
+                    b[currentPosition - 16] = 'o';
+                    currentPosition = currentPosition - 16;
+                    printLabirint(&board[0][0], 16, 16);
                 }
-            break;
+                break;
 
             case 'S':
-                int S = 0;
-                for(int i = row; i > 0; i--){
-                    for(int j = col; j < 0; j--){
-                        if(b[i*col+ j] == '.' && b[(i+1)*col + j] == ' ' && b[i*col+j-1] == '.' && S == 0){
-                            b[(i+1)*col +j] = '.';
-                            S = 1;
-                            printLabirint(&board[0][0], 16, 16);
-                        }
-                    }
+                if (b[currentPosition +16] == ' '){
+                    b[currentPosition] = '.';
+                    b[currentPosition + 16] = 'o';
+                    currentPosition = currentPosition + 16;
+                    printLabirint(&board[0][0], 16, 16);
                 }
-            break;
+                break;
 
             case 'E':
-                int E = 0;
-                for(int i = row; i > 0; i--){
-                    for(int j = col; j > 0; j--){
-                        if(b[i*col+j] == '.' && b[i*col+(j+1)] == ' ' && b[(i+1)*col + j] != '.'&& E == 0){
-                            b[i*col +(j+1)] = '.';
-                            E = 1;
-                            printLabirint(&board[0][0], 16, 16);
-                            }
-                        }
-                    }
-                    
-            break;
+                if (b[currentPosition +1] == ' '){
+                    b[currentPosition] = '.';
+                    b[currentPosition + 1] = 'o';
+                    currentPosition = currentPosition + 1;
+                    printLabirint(&board[0][0], 16, 16);
+                }
+                break;
 
             case 'O':
-                int O = 0;
-                for(int i = row; i > 0; i--){
-                    for(int j = col; j > 0; j--){
-                        if(b[i*col + j] == '.' && b[i*col + j-1] == ' ' && O == 0){
-                            b[i*col + j-1] = '.';
-                            O = 1;
-                            printLabirint(&board[0][0], 16, 16);
-                        }
-                    }
+                if (b[currentPosition - 1] == ' '){
+                    b[currentPosition] = '.';
+                    b[currentPosition - 1] = 'o';
+                    currentPosition = currentPosition - 1;
+                    printLabirint(&board[0][0], 16, 16);
                 }
-                
+                break;
+
         }
     }while(!flag);
-        
+
 }
 
-  
+
 
 
 int main(){
@@ -132,3 +114,4 @@ int main(){
 
     return 0;
 }
+
