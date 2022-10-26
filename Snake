@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char board[16][16];
-
+char board[256];
 
 void voidBoard(char* b, int row, int col){
     for(int i = 0; i < row; i++){
@@ -11,6 +10,7 @@ void voidBoard(char* b, int row, int col){
             b[i*col + j] = ' ';
         }
     }
+    //printf("\n");
 }
 
 void Labirint(char* b, int row, int col){
@@ -50,52 +50,92 @@ void start(char* b, int row, int col){
     }
 }
 
+void Death(){
+    printf("Purtroppo sei morto!");
+    exit(0);
+}
+
+void Success(){
+    printf("Congratulazioni! Sei arrivato a destinazione!");
+    exit(0);
+}
+
+void WrongInput(){
+    printf("Input non corretto, riinserirlo.");
+}
+
 void Moving(char* b, int row, int col){
 
     char move;
-    int flag = 0;
-    int currentPosition = 128;
+    int currentPosition = 32;
     do{
         scanf(" %c", &move);
         switch(move){
             case 'N':
-                if (b[currentPosition -16] == ' '){ //se la posizione sopra la posizione attuale è parte del campo
+                if ((b[currentPosition -16] == ' ' || b[currentPosition -16] == '$' || b[currentPosition -16] == '!') && currentPosition -16 != 239){ //se la posizione sopra la posizione attuale è parte del campo
                     b[currentPosition] = '.';
                     b[currentPosition - 16] = 'o';
                     currentPosition = currentPosition - 16; //nuova pos. attuale
-                    printLabirint(&board[0][0], 16, 16);
+                    printLabirint(&board[0], 16, 16);
+                }
+                else if (b[currentPosition -16] == '#') { //se la posizione sopra la posizione attuale è una parete
+                    Death();
+                }
+                else if (currentPosition -16 == 239) { //se ho completato il percorso
+                    Success();
                 }
                 break;
 
             case 'S':
-                if (b[currentPosition +16] == ' '){ //se la posizione sotto la posizione attuale è parte del campo
+                if ((b[currentPosition +16] == ' ' || b[currentPosition +16] == '$' || b[currentPosition +16] == '!') && currentPosition +16 != 239){ //se la posizione sotto la posizione attuale è parte del campo
                     b[currentPosition] = '.';
                     b[currentPosition + 16] = 'o';
                     currentPosition = currentPosition + 16; //nuova pos. attuale
-                    printLabirint(&board[0][0], 16, 16);
+                    printLabirint(&board[0], 16, 16);
+                }
+                else if (b[currentPosition +16] == '#') { //se la posizione sotto la posizione attuale è una parete
+                    Death();
+                }
+                else if (currentPosition +16 == 239) { //se ho completato il percorso
+                    Success();
                 }
                 break;
 
             case 'E':
-                if (b[currentPosition +1] == ' '){ //se la posizione a destra della posizione attuale è parte del campo
-                    b[currentPosition] = '.'; 
+                if ((b[currentPosition +1] == ' ' || b[currentPosition +1] == '$' || b[currentPosition +1] == '!') && currentPosition +1 != 239){ //se la posizione a destra della posizione attuale è parte del campo
+                    b[currentPosition] = '.';
                     b[currentPosition + 1] = 'o';
                     currentPosition = currentPosition + 1; //nuova pos. attuale
-                    printLabirint(&board[0][0], 16, 16);
+                    printLabirint(&board[0], 16, 16);
+                }
+                else if (b[currentPosition +1] == '#') { //se la posizione a destra della posizione attuale è una parete
+                    Death();
+                }
+                else if (currentPosition +1 == 239) { //se ho completato il percorso
+                    Success();
                 }
                 break;
 
             case 'O':
-                if (b[currentPosition - 1] == ' '){ //se la posizione a sinistra della posizione attuale è parte del campo
+                if ((b[currentPosition - 1] == ' ' || b[currentPosition -1] == '$' || b[currentPosition -1] == '!') && currentPosition -1 != 239){ //se la posizione a sinistra della posizione attuale è parte del campo
                     b[currentPosition] = '.';
                     b[currentPosition - 1] = 'o';
                     currentPosition = currentPosition - 1; //nuova pos. attuale
-                    printLabirint(&board[0][0], 16, 16);
+                    printLabirint(&board[0], 16, 16);
+                }
+                else if (b[currentPosition -1] == '#') { //se la posizione a sinistra della posizione attuale è una parete
+                    Death();
+                }
+                else if (currentPosition -1 == 239) { //se ho completato il percorso
+                    Success();
                 }
                 break;
 
+            default:
+                WrongInput();
+                break;
         }
-    }while(!flag);
+    }while(1);
 
 }
 
@@ -105,12 +145,13 @@ void Moving(char* b, int row, int col){
 int main(){
 
 
-    voidBoard(&board[0][0], 16, 16);
-    Labirint(&board[0][0], 16,16);
-    start(&board[0][0], 16, 16);
-    printLabirint(&board[0][0], 16, 16);
-    Moving(&board[0][0], 16, 16);
-    printLabirint(&board[0][0], 16, 16);
+    voidBoard(&board[0], 16, 16);
+    Labirint(&board[0], 16,16);
+    start(&board[0], 16, 16);
+    printLabirint(&board[0], 16, 16);
+    Moving(&board[0], 16, 16);
+    printLabirint(&board[0], 16, 16);
 
     return 0;
 }
+
