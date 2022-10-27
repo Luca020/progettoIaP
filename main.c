@@ -1,5 +1,3 @@
-//da fare: creare un funzione per ogni direzione di sviluppo dei muri, in modo da non ripetere il codice
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -422,12 +420,14 @@ void moving(char* b, int start, int score){ //muove il giocatore
                     }
                     b[currentPosition - side] = 'o';
                     currentPosition = currentPosition - side; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&b[0], score);
                 }
                 else if (b[currentPosition - side] == '_') { //se ho completato il percorso
                     b[currentPosition] = '.';
                     b[currentPosition - side] = 'o';
                     score--;
+                    system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -455,6 +455,7 @@ void moving(char* b, int start, int score){ //muove il giocatore
                     }
                     b[currentPosition + side] = 'o';
                     currentPosition = currentPosition + side; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&b[0], score);
                 }
 
@@ -462,6 +463,7 @@ void moving(char* b, int start, int score){ //muove il giocatore
                     b[currentPosition] = '.';
                     b[currentPosition + side] = 'o';
                     score--;
+                    system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -489,12 +491,14 @@ void moving(char* b, int start, int score){ //muove il giocatore
                     }
                     b[currentPosition + 1] = 'o';
                     currentPosition = currentPosition + 1; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&b[0], score);
                 }
                 else if (b[currentPosition + 1] == '_') { //se ho completato il percorso
                     b[currentPosition] = '.';
                     b[currentPosition + 1] = 'o';
                     score--;
+                    system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -522,12 +526,14 @@ void moving(char* b, int start, int score){ //muove il giocatore
                     }
                     b[currentPosition - 1] = 'o';
                     currentPosition = currentPosition - 1; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&b[0], score);
                 }
                 else if (b[currentPosition - 1] == '_') { //se ho completato il percorso
                     b[currentPosition] = '.';
                     b[currentPosition - 1] = 'o';
                     score--;
+                    system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -563,4 +569,3 @@ int main(){
     }
     return 0;
 }
-
