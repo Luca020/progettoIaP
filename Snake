@@ -76,6 +76,7 @@ void Moving(char* b, int row, int col){
                     b[currentPosition] = '.';
                     b[currentPosition - 16] = 'o';
                     currentPosition = currentPosition - 16; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&board[0], 16, 16);
                 }
                 else if (b[currentPosition -16] == '#') { //se la posizione sopra la posizione attuale è una parete
@@ -91,6 +92,7 @@ void Moving(char* b, int row, int col){
                     b[currentPosition] = '.';
                     b[currentPosition + 16] = 'o';
                     currentPosition = currentPosition + 16; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&board[0], 16, 16);
                 }
                 else if (b[currentPosition +16] == '#') { //se la posizione sotto la posizione attuale è una parete
@@ -106,6 +108,7 @@ void Moving(char* b, int row, int col){
                     b[currentPosition] = '.';
                     b[currentPosition + 1] = 'o';
                     currentPosition = currentPosition + 1; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&board[0], 16, 16);
                 }
                 else if (b[currentPosition +1] == '#') { //se la posizione a destra della posizione attuale è una parete
@@ -121,6 +124,7 @@ void Moving(char* b, int row, int col){
                     b[currentPosition] = '.';
                     b[currentPosition - 1] = 'o';
                     currentPosition = currentPosition - 1; //nuova pos. attuale
+                    system("clear");
                     printLabirint(&board[0], 16, 16);
                 }
                 else if (b[currentPosition -1] == '#') { //se la posizione a sinistra della posizione attuale è una parete
