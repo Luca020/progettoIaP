@@ -61,7 +61,7 @@ void Success(){
 }
 
 void WrongInput(){
-    printf("Input non corretto, riinserirlo.");
+    printf("Input non corretto, reinserirlo.");
 }
 
 void Moving(char* b, int row, int col){
