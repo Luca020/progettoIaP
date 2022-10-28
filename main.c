@@ -1,3 +1,14 @@
+//da fare: creare un funzione per ogni direzione di sviluppo dei muri, in modo da non ripetere il codice
+            //trasformare int in unsigned int quando necessario
+            //utilizzare gli short quando necessario
+            //debugging e testing
+            //dividere in librerie
+            //implemtare comandi con frecce
+            //implementare lettura comando senza premere enter
+            //implementare timer
+            //implementare lunghezza snake
+            //implementare grafica
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
