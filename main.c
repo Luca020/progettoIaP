@@ -303,7 +303,7 @@ void randomFlyingWalls(Box *b) { //posiziona un numero casuale di muri 'volanti'
                 while (b[base-xSide+1].symbol!='#' && b[base-xSide+2].symbol!='#' && b[base+1].symbol!='#' && b[base+2].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+2].symbol!='#' &&
                        b[base-xSide+1].symbol!='_' && b[base-xSide+2].symbol!='_' && b[base+1].symbol!='_' && b[base+2].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+2].symbol!='_' &&
                        b[base-xSide+1].symbol!='o' && b[base-xSide+2].symbol!='o' && b[base+1].symbol!='o' && b[base+2].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+2].symbol!='o' && k>0){
-                    //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
+                    //finché nelle 6 caselle poste a destra della casella scelta non ci sono muri o end o start
                     b[base+1].symbol='#';
                     base++;
                     k--;
@@ -313,7 +313,7 @@ void randomFlyingWalls(Box *b) { //posiziona un numero casuale di muri 'volanti'
                 while (b[base-xSide-1].symbol!='#' && b[base-xSide-2].symbol!='#' && b[base-1].symbol!='#' && b[base-2].symbol!='#' && b[base+xSide-1].symbol!='#' && b[base+xSide-2].symbol!='#' &&
                        b[base-xSide-1].symbol!='_' && b[base-xSide-2].symbol!='_' && b[base-1].symbol!='_' && b[base-2].symbol!='_' && b[base+xSide-1].symbol!='_' && b[base+xSide-2].symbol!='_' &&
                        b[base-xSide-1].symbol!='o' && b[base-xSide-2].symbol!='o' && b[base-1].symbol!='o' && b[base-2].symbol!='o' && b[base+xSide-1].symbol!='o' && b[base+xSide-2].symbol!='o' && k>0){
-                    //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
+                    //finché nelle 6 caselle poste a sinistra della casella scelta non ci sono muri o end o start
                     b[base-1].symbol='#';
                     base--;
                     k--;
@@ -359,7 +359,7 @@ void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni cas
             while (b[base-xSide+1].symbol!='#' && b[base-xSide+2].symbol!='#' && b[base+1].symbol!='#' && b[base+2].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+2].symbol!='#' &&
                    b[base-xSide+1].symbol!='_' && b[base-xSide+2].symbol!='_' && b[base+1].symbol!='_' && b[base+2].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+2].symbol!='_' &&
                    b[base-xSide+1].symbol!='o' && b[base-xSide+2].symbol!='o' && b[base+1].symbol!='o' && b[base+2].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+2].symbol!='o' && k>0){
-                //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
+                //finché nelle 6 caselle poste a destra della casella scelta non ci sono muri o end o start
                 b[base+1].symbol='#';
                 base++;
                 k--;
@@ -369,7 +369,7 @@ void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni cas
             while (b[base-xSide-1].symbol!='#' && b[base-xSide-2].symbol!='#' && b[base-1].symbol!='#' && b[base-2].symbol!='#' && b[base+xSide-1].symbol!='#' && b[base+xSide-2].symbol!='#' &&
                    b[base-xSide-1].symbol!='_' && b[base-xSide-2].symbol!='_' && b[base-1].symbol!='_' && b[base-2].symbol!='_' && b[base+xSide-1].symbol!='_' && b[base+xSide-2].symbol!='_' &&
                    b[base-xSide-1].symbol!='o' && b[base-xSide-2].symbol!='o' && b[base-1].symbol!='o' && b[base-2].symbol!='o' && b[base+xSide-1].symbol!='o' && b[base+xSide-2].symbol!='o' && k>0){
-                //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
+                //finché nelle 6 caselle poste a sinistra della casella scelta non ci sono muri o end o start
                 b[base-1].symbol='#';
                 base--;
                 k--;
@@ -412,7 +412,7 @@ void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni cas
                         while (b[base-xSide+1].symbol!='#' && b[base-xSide+2].symbol!='#' && b[base+1].symbol!='#' && b[base+2].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+2].symbol!='#' &&
                                b[base-xSide+1].symbol!='_' && b[base-xSide+2].symbol!='_' && b[base+1].symbol!='_' && b[base+2].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+2].symbol!='_' &&
                                b[base-xSide+1].symbol!='o' && b[base-xSide+2].symbol!='o' && b[base+1].symbol!='o' && b[base+2].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+2].symbol!='o' && k>0){
-                            //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
+                            //finché nelle 6 caselle poste a destra della casella scelta non ci sono muri o end o start
                             b[base+1].symbol='#';
                             base++;
                             k--;
@@ -422,7 +422,7 @@ void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni cas
                         while (b[base-xSide-1].symbol!='#' && b[base-xSide-2].symbol!='#' && b[base-1].symbol!='#' && b[base-2].symbol!='#' && b[base+xSide-1].symbol!='#' && b[base+xSide-2].symbol!='#' &&
                                b[base-xSide-1].symbol!='_' && b[base-xSide-2].symbol!='_' && b[base-1].symbol!='_' && b[base-2].symbol!='_' && b[base+xSide-1].symbol!='_' && b[base+xSide-2].symbol!='_' &&
                                b[base-xSide-1].symbol!='o' && b[base-xSide-2].symbol!='o' && b[base-1].symbol!='o' && b[base-2].symbol!='o' && b[base+xSide-1].symbol!='o' && b[base+xSide-2].symbol!='o' && k>0){
-                            //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
+                            //finché nelle 6 caselle poste a sinistra della casella scelta non ci sono muri o end o start
                             b[base-1].symbol='#';
                             base--;
                             k--;
