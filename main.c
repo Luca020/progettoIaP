@@ -1,27 +1,124 @@
-//da fare: creare un funzione per ogni direzione di sviluppo dei muri, in modo da non ripetere il codice
-            //trasformare int in unsigned int quando necessario
-            //utilizzare gli short quando necessario
-            //debugging e testing
-            //dividere in librerie
-            //implemtare comandi con frecce
-            //implementare lettura comando senza premere enter
-            //implementare timer
-            //implementare lunghezza snake
-            //implementare grafica
+//idee e cose da fare:
+//creare un funzione per ogni direzione di sviluppo dei muri, in modo da non ripetere il codice
+//trasformare int in unsigned int quando necessario
+//utilizzare gli short quando necessario
+//debugging e testing
+//dividere in librerie
+//implementare comandi con frecce
+//implementare lettura comando senza premere enter
+//implementare timer che permetta al gioco di procedere anche se non viene dato input
+//implementare livelli
+//implementare snake che abbia dimensione fisica variabile
+//implementare grafica
+//documentazione
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
-int side = 20; //lato del quadrato di gioco
+struct box {
+    char symbol;
+    short predecessor;
+    short gCost;
+    short hCost;
+};
+typedef struct box Box;
 
-void createBoard(char* b){ //crea il campo di gioco con pareti e spazi vuoti
-    for(int i = 0; i < (side*side); i++){
-        if ((i>=0 && i<(side)) || (i>=((side*side)-side) && i<(side*side)) || i%side == 0 || i%side == (side-1)){
-            b[i] = '#';
+short unsigned xSide = 20u; //lunghezza del campo di gioco
+short unsigned ySide = 20u; //altezza del campo di gioco
+
+
+/*
+void aiAlgorithm(Box* b, int start, int end){
+    //gCost= distanza da start
+    //hCost= distanza da end
+    //fCost= hCost+gCost
+    b[start].gCost = 0;
+    xDist = abs(((start - xSide) % xSide) - end % xSide);
+    yDist = abs(((start - xSide) / xSide) - end / xSide);
+    b[start].hCost = yDist + xDist;
+
+    creo struct node con campi int hCost, int f
+    Inizializzo una lista di struct in cui terrò dentro le caselle candidate
+    Prendo lo start
+    Controllo le caselle attorno escluso il predecessore. Se non sono già state controllate:
+    ricerca del box b[i] con campo fCost minore. Una volta trovato ne studio i box adiacenti
+    Box candidates[500];
+    candidates[0]=b[start];
+    short min=xSize*ySize;
+    short i=0;
+    _Bool arrived = 0;
+    while (!arrived){
+        for (int j =0; j<size; j++){
+            if (candidates[j].gCost+candidates[j].hCost<=min){
+                min = candidates[j].gCost+candidates[j].hCost;
+                i=j;
+            }
+        }
+        if(b[i-xSide].symbol!='#' && b[i].predecessor!=i-xSide) { //casella alta se essa non è un muro e se non è il predecessore del nodo predecessore
+            b[i-xSide].gCost = 1+b[predecessor].gCost;
+            xDist = abs(((i-xSide)%xSide)-end%xSide);
+            yDist = abs(((i-xSide)/xSide)-end/xSide);
+            b[i-xSide].hCost = yDist + xDist;
+            b[i-xSide].predecessor = i;
+            candidates[size]=b[i-xSide];
+            size++;
+            if (b[i-xSide].symbol='_')
+                arrived = 1;
+        }
+        if(b[i+1].symbol!='#' && b[i].predecessor!=i+1){// casella a destra
+            b[i+1].gCost = 1 + b[predecessor].gCost;
+            xDist = abs(((i+1)%xSide)-end%xSide);
+            yDist = abs(((i+1)/xSide)-end/xSide);
+            b[i+1].hCost = yDist+xDist;
+            b[i+1].predecessor = i;
+            candidates[size]=b[i+1];
+            size++;
+            if (b[i-xSide].symbol='_')
+                arrived = 1;
+        }
+        if(b[i+xSide].symbol!='#' && b[i].predecessor!=i+xSide){ //casella bassa
+            b[i+xSide].gCost = 1 + b[predecessor].gCost;
+            xDist = abs(((i+xSide)%xSide)-end%xSide);
+            yDist = abs(((i+xSide)/xSide)-end/xSide);
+            b[i+xSide].hCost = yDist+xDist;
+            b[i+xSide].fCost = b[i+xSide].hCost + b[i+xSide].gCost
+            b[i+xSide].predecessor = i;
+            candidates[size]=b[i+xSide];
+            size++;
+            if (b[i-xSide].symbol='_')
+                arrived = 1;
+        }
+        if(b[i-1].symbol!='#' && b[i].predecessor!=i-1){ //casella a sinistra
+            b[i-1].gCost = 1 + b[predecessor].gCost;
+            xDist = abs(((i-1)%xSide)-end%xSide);
+            yDist = abs(((i-1)/xSide)-end/xSide);
+            b[i-1].hCost = yDist+xDist;
+            b[i-1].fCost = b[i-1].hCost + b[i-1].gCost
+            b[i-1].predecessor = i;
+            candidates[size]=b[i-1];
+            size++;
+            if (b[i-xSide].symbol='_')
+                arrived = 1;
+        }
+    }
+    
+    
+    Inserisco nella lista le caselle che rispettavano la condizione dell'if
+    Pesco la casella che ha l'fCost minore. Se due sono a parimerito ne scelgo una casualmente.
+    Torno alla riga 52 e ciclo finché una delle caselle attorno non è l'end
+
+
+}*/
+
+void createBoard(Box* b){ //crea il campo di gioco con pareti e spazi vuoti
+    for(int i = 0; i < (xSide*xSide); i++){
+        if ((i>=0 && i<(xSide)) || (i>=((xSide*xSide)-xSide) && i<(xSide*xSide)) || i%xSide==0 || i%xSide==(xSide-1)){
+            b[i].symbol='#';
         }
         else {
-            b[i] = ' ';
+            b[i].symbol=' ';
         }
     }
 }
@@ -31,16 +128,16 @@ int randomStart(){ //genera uno start in posizione casuale
     short randomSide = rand()%4; //sceglie a caso uno dei 4 lati
     switch(randomSide) {
         case 0: //lato superiore
-            start=(rand()%(side-2))+1; //sceglie randomicamente un numero tra 1 e (side-1)
+            start=(rand()%(xSide-2))+1; //sceglie randomicamente un numero tra 1 e (xSide-2)
             break;
         case 1: //lato inferiore
-            start=rand()%(side-2) + 1 + ((side*side)-side); //sceglie randomicamente un numero tra ((side*side)-side+1) e (side*side-1)
+            start=rand()%(xSide-2) + 1 + ((xSide*xSide)-xSide); //sceglie randomicamente un numero tra ((xSide*xSide)-xSide+1) e (xSide*xSide-1)
             break;
         case 2: //lato sinistro
-            start=((rand()%(side-2))*side)+side;//sceglie randomicamente un numero tra side e (side*side)-side che modulo side dia 0
+            start=((rand()%(xSide-2))*xSide)+xSide;//sceglie randomicamente un numero tra xSide e (xSide*xSide)-xSide che modulo xSide dia 0
             break;
         case 3: //lato destro
-            start=((rand()%(side-2))*side)+side+side-1; //sceglie randomicamente un numero tra side+side-1 e (side*side)-side-1 che modulo side dia (side-1)
+            start=((rand()%(xSide-2))*xSide)+xSide+xSide-1; //sceglie randomicamente un numero tra xSide+xSide-1 e (xSide*xSide)-xSide-1 che modulo xSide dia (xSide-1)
             break;
         default:
             printf("Errore\n");
@@ -52,17 +149,17 @@ int randomStart(){ //genera uno start in posizione casuale
 int randomEnd(int start){ // genera un end in posizione casuale in una parete diversa da quella dello start
     int end;
     int dir[3];
-    if (start<(side-1)){ //se lo start è posizionato sulla parete superiore
+    if (start<(xSide-1)){ //se lo start è posizionato sulla parete superiore
         dir[0]=1;
         dir[1]=2;
         dir[2]=3;
     }
-    else if (start>((side*side)-side)){ //se lo start è posizionato sulla parete inferiore
+    else if (start>((xSide*xSide)-xSide)){ //se lo start è posizionato sulla parete inferiore
         dir[0]=0;
         dir[1]=2;
         dir[2]=3;
     }
-    else if (start%side==0){ //se lo start è posizionato sulla parete sinistra
+    else if (start%xSide==0){ //se lo start è posizionato sulla parete sinistra
         dir[0]=0;
         dir[1]=1;
         dir[2]=3;
@@ -74,87 +171,87 @@ int randomEnd(int start){ // genera un end in posizione casuale in una parete di
     }
     short draft = rand()%3; //sceglie a caso uno num compreso tra 0 e 2
     switch(dir[draft]) {
-            case 0: //lato superiore
-                end=(rand()%(side-2))+1; //sceglie randomicamente un numero tra 1 e (side-2)
-                break;
-            case 1: //lato inferiore
-                end=rand()%(side-2) + 1 + ((side*side)-side); //sceglie randomicamente un numero tra ((side*side)-side+1) e (side*side-1)
-                break;
-            case 2: //lato sinistro
-                end=((rand()%(side-2))*side)+side;//sceglie randomicamente un numero tra side e (side*side)-side che modulo side dia 0
-                break;
-            case 3: //lato destro
-                end=((rand()%(side-2))*side)+side+side-1; //sceglie randomicamente un numero tra side+side-1 e (side*side)-side-1 che modulo side dia (side-1)
-                break;
-            default:
-                printf("Errore\n");
-                break;
+        case 0: //lato superiore
+            end=(rand()%(xSide-2))+1; //sceglie randomicamente un numero tra 1 e (xSide-2)
+            break;
+        case 1: //lato inferiore
+            end=rand()%(xSide-2) + 1 + ((xSide*xSide)-xSide); //sceglie randomicamente un numero tra ((xSide*xSide)-xSide+1) e (xSide*xSide-1)
+            break;
+        case 2: //lato sinistro
+            end=((rand()%(xSide-2))*xSide)+xSide;//sceglie randomicamente un numero tra xSide e (xSide*xSide)-xSide che modulo xSide dia 0
+            break;
+        case 3: //lato destro
+            end=((rand()%(xSide-2))*xSide)+xSide+xSide-1; //sceglie randomicamente un numero tra xSide+xSide-1 e (xSide*xSide)-xSide-1 che modulo xSide dia (xSide-1)
+            break;
+        default:
+            printf("Errore\n");
+            break;
     }
     return end;
 }
 
-void randomCoins(char *b){ //posiziona un numero casuale di monete in posizioni casuali
-    int numOfCoins = (rand()%(side*3)) +5; //determina il numero di monete. Minimo 10, massimo (side+9)
+void randomCoins(Box *b){ //posiziona un numero casuale di monete in posizioni casuali
+    int numOfCoins = (rand()%(xSide*3)) +5; //determina il numero di monete. Minimo 10, massimo (xSide+9)
     for (int i=0; i<numOfCoins; i++) {
-        int coin = rand()%(side*side);
-        if (b[coin]!='#' && b[coin]!='_' && b[coin] != 'o'){
-            b[coin]= '$';}
+        int coin = rand()%(xSide*xSide);
+        if (b[coin].symbol!='#' && b[coin].symbol!='_' && b[coin].symbol!= 'o'){
+            b[coin].symbol= '$';}
     }
 }
 
-void randomBombs(char *b) { //posiziona un numero casuale di imprevisti (!) in posizioni casuali
-    int numOfBombs = (rand()%side) +5; //determina il numero di imprevisti. Minimo 5, massimo (side+4)
+void randomBombs(Box *b) { //posiziona un numero casuale di imprevisti (!) in posizioni casuali
+    int numOfBombs = (rand()%xSide) +5; //determina il numero di imprevisti. Minimo 5, massimo (xSide+4)
     for (int i = 0; i < numOfBombs; i++) {
-        int bomb = rand() % (side * side);
-        if (b[bomb] != '#' && b[bomb] != '_' && b[bomb] != '$' && b[bomb] != 'o') {
-            b[bomb] = '!';
+        int bomb = rand() % (xSide * xSide);
+        if (b[bomb].symbol!= '#' && b[bomb].symbol!= '_' && b[bomb].symbol!= '$' && b[bomb].symbol!= 'o') {
+            b[bomb].symbol= '!';
         }
     }
 }
 
 /*
 void randomWallsSimple(char *b){ //genera muri partendo dai lati della campo. Non genera rami figli. Buggato
-    int numOfWalls = (rand()%(side/4)) +15; //determina il numero di muri
+    int numOfWalls = (rand()%(xSide/4)) +15; //determina il numero di muri
     for (int i=0; i< numOfWalls; i++){
         int base;
-        int k=(rand()%((side/3)*2))+1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (side/2 +1)
+        int k=(rand()%((xSide/3)*2))+1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/2 +1)
         short randomSide = rand()%4; //determina il lato dal quale partira' il muro
         switch(randomSide) {
             case 0: //lato superiore
-                base=rand()%side; //sceglie randomicamente un numero tra 0 e side
-                if(b[base]!='o' && b[base]!='_'){ //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base+side+side] != '#' && b[base+side+side-1] != '#' && b[base+side+side+1] != '#' && k>0){ //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base+side]='#';
-                        base += side;
+                base=rand()%xSide; //sceglie randomicamente un numero tra 0 e xSide
+                if(b[base].symbol!='o' && b[base].symbol!='_'){ //se il punto da cui parte il muro non è lo start o l'end
+                    while (b[base+xSide+xSide] != '#' && b[base+xSide+xSide-1] != '#' && b[base+xSide+xSide+1] != '#' && k>0){ //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
+                        b[base+xSide].symbol='#';
+                        base += xSide;
                         k--;
                     }
                 }
                 break;
             case 1: //lato inferiore
-                base=rand()%side + ((side*side)-side); //sceglie randomicamente un numero tra ((side*side)-side) e (side*side)
-                if(b[base]!='o' && b[base]!='_'){ //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base-side-side] != '#' && b[base-side-side-1] != '#' && b[base-side-side+1] != '#' && k>0) { //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base - side] = '#';
-                        base -= side;
+                base=rand()%xSide + ((xSide*xSide)-xSide); //sceglie randomicamente un numero tra ((xSide*xSide)-xSide) e (xSide*xSide)
+                if(b[base].symbol!='o' && b[base].symbol!='_'){ //se il punto da cui parte il muro non è lo start o l'end
+                    while (b[base-xSide-xSide] != '#' && b[base-xSide-xSide-1] != '#' && b[base-xSide-xSide+1] != '#' && k>0) { //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
+                        b[base - xSide].symbol='#';
+                        base -= xSide;
                         k--;
                     }
                 }
                 break;
             case 2: //lato sinistro
-                base=(rand()%side)*side; //sceglie randomicamente un numero tra 0 e (side*side) che modulo side dia 0
-                if(b[base]!='o' && b[base]!='_') { //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base + 2] != '#' && b[base-side+2] != '#' && b[base+side+2] != '#' && k>0) { //finché non sta per incrociare un altro muro' o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base + 1] = '#';
+                base=(rand()%xSide)*xSide; //sceglie randomicamente un numero tra 0 e (xSide*xSide) che modulo xSide dia 0
+                if(b[base].symbol!='o' && b[base].symbol!='_') { //se il punto da cui parte il muro non è lo start o l'end
+                    while (b[base + 2] != '#' && b[base-xSide+2] != '#' && b[base+xSide+2] != '#' && k>0) { //finché non sta per incrociare un altro muro' o finché non raggiunge la lunghezza randomica stabilita precedentemente
+                        b[base + 1].symbol='#';
                         base += 1;
                         k--;
                     }
                 }
                 break;
             case 3: //lato destro
-                base=(rand()%side)*side-1; //sceglie randomicamente un numero tra 0 e (side*side) che modulo side dia (side-1)
-                if(b[base]!='o' && b[base]!='_') { //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base - 2] != '#' && b[base-side-2] != '#' && b[base+side-2] != '#' && k>0) { //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base - 1] = '#';
+                base=(rand()%xSide)*xSide-1; //sceglie randomicamente un numero tra 0 e (xSide*xSide) che modulo xSide dia (xSide-1)
+                if(b[base].symbol!='o' && b[base].symbol!='_') { //se il punto da cui parte il muro non è lo start o l'end
+                    while (b[base - 2] != '#' && b[base-xSide-2] != '#' && b[base+xSide-2] != '#' && k>0) { //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
+                        b[base - 1].symbol='#';
                         base -= 1;
                         k--;
                     }
@@ -168,56 +265,56 @@ void randomWallsSimple(char *b){ //genera muri partendo dai lati della campo. No
 }
 */
 
-void randomFlyingWalls(char *b) { //posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
-    srand(time(0));
-    int numOfWalls = (rand()%side); //determina randomicamente il numero di muri
+void randomFlyingWalls(Box *b) { //posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
+    //srand(time(0));
+    int numOfWalls = (rand()%xSide); //determina randomicamente il numero di muri
     for (int i = 0; i < numOfWalls; i++) {
-        int k = (rand() % ((side/2))) +1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (side/3 *2 +1)
+        int k = (rand() % ((xSide/2))) +1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
         int base;
         do {
-            base = rand() % (side * side);
-        } while (b[base]!=' ' || b[base+1]=='#' || b[base-1]=='#' || b[base+side]=='#' || b[base-side]=='#'
-        || b[base+side+1]=='#' || b[base+side-1]=='#' || b[base-side+1]=='#' || b[base-side-1]=='#');
+            base = rand() % (xSide * xSide);
+        } while (b[base].symbol!=' ' || b[base+1].symbol=='#' || b[base-1].symbol=='#' || b[base+xSide].symbol=='#' || b[base-xSide].symbol=='#'
+                 || b[base+xSide+1].symbol=='#' || b[base+xSide-1].symbol=='#' || b[base-xSide+1].symbol=='#' || b[base-xSide-1].symbol=='#');
         //se la casella scelta non è uno spazio o se confina con un muro o una parete
-        b[base]='#';
+        b[base].symbol='#';
         short direction = rand()%4;
         switch(direction){
             case 0: //basso
-                while (b[base+side-1]!='#' && b[base+side]!='#' && b[base+side+1]!='#' && b[base+side+side-1]!='#' && b[base+side+side]!='#' && b[base+side+side+1]!='#' &&
-                       b[base+side-1]!='_' && b[base+side]!='_' && b[base+side+1]!='_' && b[base+side+side-1]!='_' && b[base+side+side]!='_' && b[base+side+side+1]!='_' &&
-                       b[base+side-1]!='o' && b[base+side]!='o' && b[base+side+1]!='o' && b[base+side+side-1]!='o' && b[base+side+side]!='o' && b[base+side+side+1]!='o' && k>0){
+                while (b[base+xSide-1].symbol!='#' && b[base+xSide].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+xSide-1].symbol!='#' && b[base+xSide+xSide].symbol!='#' && b[base+xSide+xSide+1].symbol!='#' &&
+                       b[base+xSide-1].symbol!='_' && b[base+xSide].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+xSide-1].symbol!='_' && b[base+xSide+xSide].symbol!='_' && b[base+xSide+xSide+1].symbol!='_' &&
+                       b[base+xSide-1].symbol!='o' && b[base+xSide].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+xSide-1].symbol!='o' && b[base+xSide+xSide].symbol!='o' && b[base+xSide+xSide+1].symbol!='o' && k>0){
                     //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
-                    b[base+side]='#';
-                    base += side;
+                    b[base+xSide].symbol='#';
+                    base += xSide;
                     k--;
                 }
                 break;
             case 1: //alto
-                while (b[base-side-1]!='#' && b[base-side]!='#' && b[base-side+1]!='#' && b[base-side-side-1]!='#' && b[base-side-side]!='#' && b[base-side-side+1]!='#' &&
-                       b[base-side-1]!='_' && b[base-side]!='_' && b[base-side+1]!='_' && b[base-side-side-1]!='_' && b[base-side-side]!='_' && b[base-side-side+1]!='_' &&
-                       b[base-side-1]!='o' && b[base-side]!='o' && b[base-side+1]!='o' && b[base-side-side-1]!='o' && b[base-side-side]!='o' && b[base-side-side+1]!='o' && k>0){
+                while (b[base-xSide-1].symbol!='#' && b[base-xSide].symbol!='#' && b[base-xSide+1].symbol!='#' && b[base-xSide-xSide-1].symbol!='#' && b[base-xSide-xSide].symbol!='#' && b[base-xSide-xSide+1].symbol!='#' &&
+                       b[base-xSide-1].symbol!='_' && b[base-xSide].symbol!='_' && b[base-xSide+1].symbol!='_' && b[base-xSide-xSide-1].symbol!='_' && b[base-xSide-xSide].symbol!='_' && b[base-xSide-xSide+1].symbol!='_' &&
+                       b[base-xSide-1].symbol!='o' && b[base-xSide].symbol!='o' && b[base-xSide+1].symbol!='o' && b[base-xSide-xSide-1].symbol!='o' && b[base-xSide-xSide].symbol!='o' && b[base-xSide-xSide+1].symbol!='o' && k>0){
                     //finché nelle 6 caselle poste sopra la casella scelta non ci sono muri o end o start
-                    b[base-side]='#';
-                    base -= side;
+                    b[base-xSide].symbol='#';
+                    base -= xSide;
                     k--;
                 }
                 break;
             case 2: //destra
-                while (b[base-side+1]!='#' && b[base-side+2]!='#' && b[base+1]!='#' && b[base+2]!='#' && b[base+side+1]!='#' && b[base+side+2]!='#' &&
-                       b[base-side+1]!='_' && b[base-side+2]!='_' && b[base+1]!='_' && b[base+2]!='_' && b[base+side+1]!='_' && b[base+side+2]!='_' &&
-                       b[base-side+1]!='o' && b[base-side+2]!='o' && b[base+1]!='o' && b[base+2]!='o' && b[base+side+1]!='o' && b[base+side+2]!='o' && k>0){
+                while (b[base-xSide+1].symbol!='#' && b[base-xSide+2].symbol!='#' && b[base+1].symbol!='#' && b[base+2].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+2].symbol!='#' &&
+                       b[base-xSide+1].symbol!='_' && b[base-xSide+2].symbol!='_' && b[base+1].symbol!='_' && b[base+2].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+2].symbol!='_' &&
+                       b[base-xSide+1].symbol!='o' && b[base-xSide+2].symbol!='o' && b[base+1].symbol!='o' && b[base+2].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+2].symbol!='o' && k>0){
                     //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
-                    b[base+1]='#';
+                    b[base+1].symbol='#';
                     base++;
                     k--;
                 }
                 break;
             case 3: //sinistra
-                while (b[base-side-1]!='#' && b[base-side-2]!='#' && b[base-1]!='#' && b[base-2]!='#' && b[base+side-1]!='#' && b[base+side-2]!='#' &&
-                       b[base-side-1]!='_' && b[base-side-2]!='_' && b[base-1]!='_' && b[base-2]!='_' && b[base+side-1]!='_' && b[base+side-2]!='_' &&
-                       b[base-side-1]!='o' && b[base-side-2]!='o' && b[base-1]!='o' && b[base-2]!='o' && b[base+side-1]!='o' && b[base+side-2]!='o' && k>0){
+                while (b[base-xSide-1].symbol!='#' && b[base-xSide-2].symbol!='#' && b[base-1].symbol!='#' && b[base-2].symbol!='#' && b[base+xSide-1].symbol!='#' && b[base+xSide-2].symbol!='#' &&
+                       b[base-xSide-1].symbol!='_' && b[base-xSide-2].symbol!='_' && b[base-1].symbol!='_' && b[base-2].symbol!='_' && b[base+xSide-1].symbol!='_' && b[base+xSide-2].symbol!='_' &&
+                       b[base-xSide-1].symbol!='o' && b[base-xSide-2].symbol!='o' && b[base-1].symbol!='o' && b[base-2].symbol!='o' && b[base+xSide-1].symbol!='o' && b[base+xSide-2].symbol!='o' && k>0){
                     //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
-                    b[base-1]='#';
+                    b[base-1].symbol='#';
                     base--;
                     k--;
                 }
@@ -229,78 +326,77 @@ void randomFlyingWalls(char *b) { //posiziona un numero casuale di muri 'volanti
     }
 }
 
-void randomWalls(char *b){ //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
-    srand(time(0));
-    int numOfWalls = (rand()%(side*4)) +10; //determina il numero di muri
+void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
+    int numOfWalls = (rand()%(xSide*4)) +10; //determina il numero di muri
     for (int i=0; i< numOfWalls; i++) {
-        int k=(rand()%(side/2))+2; //determina randomicamente la lunghezza del muro, minimo 1, massimo (side/3 *2 +1)
+        int k=(rand()%(xSide/2))+2; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
         int base;
         do {
-            base = rand()%(side*side);
-        } while (b[base]!='#' || base==0 ||  base==(side-1) || base==((side*side)-1) || base==((side*side)-side+1)); //se la casella scelta e' un angolo o se non contiene '#'
+            base = rand()%(xSide*xSide);
+        } while (b[base].symbol!='#' || base==0 ||  base==(xSide-1) || base==((xSide*xSide)-1) || base==((xSide*xSide)-xSide+1)); //se la casella scelta e' un angolo o se non contiene '#'
 
-        if (base<(side-1)){ //se la casella scelta fa parte della parete superiore
-            while (b[base+side-1]!='#' && b[base+side]!='#' && b[base+side+1]!='#' && b[base+side+side-1]!='#' && b[base+side+side]!='#' && b[base+side+side+1]!='#' &&
-                   b[base+side-1]!='_' && b[base+side]!='_' && b[base+side+1]!='_' && b[base+side+side-1]!='_' && b[base+side+side]!='_' && b[base+side+side+1]!='_' &&
-                   b[base+side-1]!='o' && b[base+side]!='o' && b[base+side+1]!='o' && b[base+side+side-1]!='o' && b[base+side+side]!='o' && b[base+side+side+1]!='o' && k>0){
-                   //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
-                b[base+side]='#';
-                base += side;
+        if (base<(xSide-1)){ //se la casella scelta fa parte della parete superiore
+            while (b[base+xSide-1].symbol!='#' && b[base+xSide].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+xSide-1].symbol!='#' && b[base+xSide+xSide].symbol!='#' && b[base+xSide+xSide+1].symbol!='#' &&
+                   b[base+xSide-1].symbol!='_' && b[base+xSide].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+xSide-1].symbol!='_' && b[base+xSide+xSide].symbol!='_' && b[base+xSide+xSide+1].symbol!='_' &&
+                   b[base+xSide-1].symbol!='o' && b[base+xSide].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+xSide-1].symbol!='o' && b[base+xSide+xSide].symbol!='o' && b[base+xSide+xSide+1].symbol!='o' && k>0){
+                //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
+                b[base+xSide].symbol='#';
+                base += xSide;
                 k--;
             }
         }
-        else if (base>((side*side)-side+1) && base<((side*side)-1)){ //se la casella scelta fa parte della parete inferiore
-            while (b[base-side-1]!='#' && b[base-side]!='#' && b[base-side+1]!='#' && b[base-side-side-1]!='#' && b[base-side-side]!='#' && b[base-side-side+1]!='#' &&
-                   b[base-side-1]!='_' && b[base-side]!='_' && b[base-side+1]!='_' && b[base-side-side-1]!='_' && b[base-side-side]!='_' && b[base-side-side+1]!='_' &&
-                   b[base-side-1]!='o' && b[base-side]!='o' && b[base-side+1]!='o' && b[base-side-side-1]!='o' && b[base-side-side]!='o' && b[base-side-side+1]!='o' && k>0){
+        else if (base>((xSide*xSide)-xSide+1) && base<((xSide*xSide)-1)){ //se la casella scelta fa parte della parete inferiore
+            while (b[base-xSide-1].symbol!='#' && b[base-xSide].symbol!='#' && b[base-xSide+1].symbol!='#' && b[base-xSide-xSide-1].symbol!='#' && b[base-xSide-xSide].symbol!='#' && b[base-xSide-xSide+1].symbol!='#' &&
+                   b[base-xSide-1].symbol!='_' && b[base-xSide].symbol!='_' && b[base-xSide+1].symbol!='_' && b[base-xSide-xSide-1].symbol!='_' && b[base-xSide-xSide].symbol!='_' && b[base-xSide-xSide+1].symbol!='_' &&
+                   b[base-xSide-1].symbol!='o' && b[base-xSide].symbol!='o' && b[base-xSide+1].symbol!='o' && b[base-xSide-xSide-1].symbol!='o' && b[base-xSide-xSide].symbol!='o' && b[base-xSide-xSide+1].symbol!='o' && k>0){
                 //finché nelle 6 caselle poste sopra la casella scelta non ci sono muri o end o start
-                b[base-side]='#';
-                base -= side;
+                b[base-xSide].symbol='#';
+                base -= xSide;
                 k--;
             }
         }
-        else if (base%side==0){ //se la casella scelta fa parte della parete sinistra
-            while (b[base-side+1]!='#' && b[base-side+2]!='#' && b[base+1]!='#' && b[base+2]!='#' && b[base+side+1]!='#' && b[base+side+2]!='#' &&
-                   b[base-side+1]!='_' && b[base-side+2]!='_' && b[base+1]!='_' && b[base+2]!='_' && b[base+side+1]!='_' && b[base+side+2]!='_' &&
-                   b[base-side+1]!='o' && b[base-side+2]!='o' && b[base+1]!='o' && b[base+2]!='o' && b[base+side+1]!='o' && b[base+side+2]!='o' && k>0){
+        else if (base%xSide==0){ //se la casella scelta fa parte della parete sinistra
+            while (b[base-xSide+1].symbol!='#' && b[base-xSide+2].symbol!='#' && b[base+1].symbol!='#' && b[base+2].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+2].symbol!='#' &&
+                   b[base-xSide+1].symbol!='_' && b[base-xSide+2].symbol!='_' && b[base+1].symbol!='_' && b[base+2].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+2].symbol!='_' &&
+                   b[base-xSide+1].symbol!='o' && b[base-xSide+2].symbol!='o' && b[base+1].symbol!='o' && b[base+2].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+2].symbol!='o' && k>0){
                 //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
-                b[base+1]='#';
+                b[base+1].symbol='#';
                 base++;
                 k--;
             }
         }
-        else if (base%side==(side-1)){ //se la casella scelta fa parte della parete destra
-            while (b[base-side-1]!='#' && b[base-side-2]!='#' && b[base-1]!='#' && b[base-2]!='#' && b[base+side-1]!='#' && b[base+side-2]!='#' &&
-                   b[base-side-1]!='_' && b[base-side-2]!='_' && b[base-1]!='_' && b[base-2]!='_' && b[base+side-1]!='_' && b[base+side-2]!='_' &&
-                   b[base-side-1]!='o' && b[base-side-2]!='o' && b[base-1]!='o' && b[base-2]!='o' && b[base+side-1]!='o' && b[base+side-2]!='o' && k>0){
+        else if (base%xSide==(xSide-1)){ //se la casella scelta fa parte della parete destra
+            while (b[base-xSide-1].symbol!='#' && b[base-xSide-2].symbol!='#' && b[base-1].symbol!='#' && b[base-2].symbol!='#' && b[base+xSide-1].symbol!='#' && b[base+xSide-2].symbol!='#' &&
+                   b[base-xSide-1].symbol!='_' && b[base-xSide-2].symbol!='_' && b[base-1].symbol!='_' && b[base-2].symbol!='_' && b[base+xSide-1].symbol!='_' && b[base+xSide-2].symbol!='_' &&
+                   b[base-xSide-1].symbol!='o' && b[base-xSide-2].symbol!='o' && b[base-1].symbol!='o' && b[base-2].symbol!='o' && b[base+xSide-1].symbol!='o' && b[base+xSide-2].symbol!='o' && k>0){
                 //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
-                b[base-1]='#';
+                b[base-1].symbol='#';
                 base--;
                 k--;
             }
         }
         else { //se la casella scelta fa parte di un muro inserito nei cicli precedenti
             k += 5;
-            if (b[base+1]=='#' || b[base-1]=='#'){ //se è un muro orizzontale
+            if (b[base+1].symbol=='#' || b[base-1].symbol=='#'){ //se è un muro orizzontale
                 short direction = rand()%2; //scelgo un lato dal quale sviluppare un ulteriore ramo
                 switch(direction){
                     case 0: //sviluppo un ramo verso il basso
-                        while (b[base+side-1]!='#' && b[base+side]!='#' && b[base+side+1]!='#' && b[base+side+side-1]!='#' && b[base+side+side]!='#' && b[base+side+side+1]!='#' &&
-                               b[base+side-1]!='_' && b[base+side]!='_' && b[base+side+1]!='_' && b[base+side+side-1]!='_' && b[base+side+side]!='_' && b[base+side+side+1]!='_' &&
-                               b[base+side-1]!='o' && b[base+side]!='o' && b[base+side+1]!='o' && b[base+side+side-1]!='o' && b[base+side+side]!='o' && b[base+side+side+1]!='o' && k>0){
+                        while (b[base+xSide-1].symbol!='#' && b[base+xSide].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+xSide-1].symbol!='#' && b[base+xSide+xSide].symbol!='#' && b[base+xSide+xSide+1].symbol!='#' &&
+                               b[base+xSide-1].symbol!='_' && b[base+xSide].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+xSide-1].symbol!='_' && b[base+xSide+xSide].symbol!='_' && b[base+xSide+xSide+1].symbol!='_' &&
+                               b[base+xSide-1].symbol!='o' && b[base+xSide].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+xSide-1].symbol!='o' && b[base+xSide+xSide].symbol!='o' && b[base+xSide+xSide+1].symbol!='o' && k>0){
                             //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
-                            b[base+side]='#';
-                            base += side;
+                            b[base+xSide].symbol='#';
+                            base += xSide;
                             k--;
                         }
                         break;
                     case 1: //sviluppo un ramo verso l'alto
-                        while (b[base-side-1]!='#' && b[base-side]!='#' && b[base-side+1]!='#' && b[base-side-side-1]!='#' && b[base-side-side]!='#' && b[base-side-side+1]!='#' &&
-                               b[base-side-1]!='_' && b[base-side]!='_' && b[base-side+1]!='_' && b[base-side-side-1]!='_' && b[base-side-side]!='_' && b[base-side-side+1]!='_' &&
-                               b[base-side-1]!='o' && b[base-side]!='o' && b[base-side+1]!='o' && b[base-side-side-1]!='o' && b[base-side-side]!='o' && b[base-side-side+1]!='o' && k>0){
+                        while (b[base-xSide-1].symbol!='#' && b[base-xSide].symbol!='#' && b[base-xSide+1].symbol!='#' && b[base-xSide-xSide-1].symbol!='#' && b[base-xSide-xSide].symbol!='#' && b[base-xSide-xSide+1].symbol!='#' &&
+                               b[base-xSide-1].symbol!='_' && b[base-xSide].symbol!='_' && b[base-xSide+1].symbol!='_' && b[base-xSide-xSide-1].symbol!='_' && b[base-xSide-xSide].symbol!='_' && b[base-xSide-xSide+1].symbol!='_' &&
+                               b[base-xSide-1].symbol!='o' && b[base-xSide].symbol!='o' && b[base-xSide+1].symbol!='o' && b[base-xSide-xSide-1].symbol!='o' && b[base-xSide-xSide].symbol!='o' && b[base-xSide-xSide+1].symbol!='o' && k>0){
                             //finché nelle 6 caselle poste sopra la casella scelta non ci sono muri o end o start
-                            b[base-side]='#';
-                            base -= side;
+                            b[base-xSide].symbol='#';
+                            base -= xSide;
                             k--;
                         }
                         break;
@@ -313,21 +409,21 @@ void randomWalls(char *b){ //posiziona un numero casuale di muri in posizioni ca
                 int direction = rand()%2; //scelgo un lato dal quale sviluppare un ulteriore ramo
                 switch(direction){
                     case 0: //sviluppo un ramo verso sinistra
-                        while (b[base-side+1]!='#' && b[base-side+2]!='#' && b[base+1]!='#' && b[base+2]!='#' && b[base+side+1]!='#' && b[base+side+2]!='#' &&
-                               b[base-side+1]!='_' && b[base-side+2]!='_' && b[base+1]!='_' && b[base+2]!='_' && b[base+side+1]!='_' && b[base+side+2]!='_' &&
-                               b[base-side+1]!='o' && b[base-side+2]!='o' && b[base+1]!='o' && b[base+2]!='o' && b[base+side+1]!='o' && b[base+side+2]!='o' && k>0){
+                        while (b[base-xSide+1].symbol!='#' && b[base-xSide+2].symbol!='#' && b[base+1].symbol!='#' && b[base+2].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+2].symbol!='#' &&
+                               b[base-xSide+1].symbol!='_' && b[base-xSide+2].symbol!='_' && b[base+1].symbol!='_' && b[base+2].symbol!='_' && b[base+xSide+1].symbol!='_' && b[base+xSide+2].symbol!='_' &&
+                               b[base-xSide+1].symbol!='o' && b[base-xSide+2].symbol!='o' && b[base+1].symbol!='o' && b[base+2].symbol!='o' && b[base+xSide+1].symbol!='o' && b[base+xSide+2].symbol!='o' && k>0){
                             //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
-                            b[base+1]='#';
+                            b[base+1].symbol='#';
                             base++;
                             k--;
                         }
                         break;
                     case 1: //sviluppo un ramo verso destra
-                        while (b[base-side-1]!='#' && b[base-side-2]!='#' && b[base-1]!='#' && b[base-2]!='#' && b[base+side-1]!='#' && b[base+side-2]!='#' &&
-                               b[base-side-1]!='_' && b[base-side-2]!='_' && b[base-1]!='_' && b[base-2]!='_' && b[base+side-1]!='_' && b[base+side-2]!='_' &&
-                               b[base-side-1]!='o' && b[base-side-2]!='o' && b[base-1]!='o' && b[base-2]!='o' && b[base+side-1]!='o' && b[base+side-2]!='o' && k>0){
+                        while (b[base-xSide-1].symbol!='#' && b[base-xSide-2].symbol!='#' && b[base-1].symbol!='#' && b[base-2].symbol!='#' && b[base+xSide-1].symbol!='#' && b[base+xSide-2].symbol!='#' &&
+                               b[base-xSide-1].symbol!='_' && b[base-xSide-2].symbol!='_' && b[base-1].symbol!='_' && b[base-2].symbol!='_' && b[base+xSide-1].symbol!='_' && b[base+xSide-2].symbol!='_' &&
+                               b[base-xSide-1].symbol!='o' && b[base-xSide-2].symbol!='o' && b[base-1].symbol!='o' && b[base-2].symbol!='o' && b[base+xSide-1].symbol!='o' && b[base+xSide-2].symbol!='o' && k>0){
                             //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
-                            b[base-1]='#';
+                            b[base-1].symbol='#';
                             base--;
                             k--;
                         }
@@ -341,11 +437,11 @@ void randomWalls(char *b){ //posiziona un numero casuale di muri in posizioni ca
     }
 }
 
-int createLabirint(char* b){
+int createLabirint(Box* b){
     int start = randomStart(); //genera uno start in posizione casuale
-    b[start]='o';
+    b[start].symbol='o';
     int end = randomEnd(start); // genera un end in posizione casuale
-    b[end]='_';
+    b[end].symbol='_';
     randomFlyingWalls(&b[0]); // posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
     randomWalls(&b[0]); //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
     randomCoins(&b[0]); //posiziona un numero casuale di monete in posizioni casuali
@@ -377,10 +473,10 @@ void guide(){ //informazioni per il giocatore
     printf("BUONA PARTITA! \n\n\n");
 }
 
-void printLabirint(char* b, int score){ //stampa il labirinto
-    for(int i = 0; i < side; i++){
-        for(int j = 0; j < side; j++){
-            printf("%c ", b[i*side+j]);
+void printLabirint(Box* b, int score){ //stampa il labirinto
+    for(int i = 0; i < xSide; i++){
+        for(int j = 0; j < xSide; j++){
+            printf("%c ", b[i*xSide+j].symbol);
         }
         printf("\n");
     }
@@ -405,7 +501,7 @@ void wrongInput(){ //il giocatore ha inserito in input non corretto
     printf("\n");
 }
 
-void moving(char* b, int start, int score){ //muove il giocatore
+void moving(Box* b, int start, int score){ //muove il giocatore
     char move;
     int currentPosition = start;
     printLabirint(&b[0], score);
@@ -413,32 +509,33 @@ void moving(char* b, int start, int score){ //muove il giocatore
     _Bool endGame=0;
     do{
         scanf(" %c", &move);
+        //move=getchar();
         switch(move){
             case 'W':
             case 'w':
-                if (b[currentPosition -side] == ' ' || b[currentPosition - side] == '.' || b[currentPosition -side] == '$' || b[currentPosition -side] == '!'){ //se la posizione sopra la posizione attuale è parte del labirinto
-                    b[currentPosition] = '.';
-                    if (b[currentPosition - side] == '!'){ //se incontra un imprevisto
+                if (b[currentPosition -xSide].symbol==' ' || b[currentPosition - xSide].symbol=='.' || b[currentPosition -xSide].symbol=='$' || b[currentPosition -xSide].symbol=='!'){ //se la posizione sopra la posizione attuale è parte del labirinto
+                    b[currentPosition].symbol= '.';
+                    if (b[currentPosition - xSide].symbol=='!'){ //se incontra un imprevisto
                         score -= coins*3/2; //toglie il punteggio
                         coins = coins/2; //dimezza numero di monete
                     }
-                    else if (b[currentPosition - side] == '$'){ // se incontra una moneta
+                    else if (b[currentPosition - xSide].symbol=='$'){ // se incontra una moneta
                         score += 3;
                         coins ++;
                     }
                     else { //altrimenti
                         score--;
                     }
-                    b[currentPosition - side] = 'o';
-                    currentPosition = currentPosition - side; //nuova pos. attuale
-                    system("clear");
+                    b[currentPosition - xSide].symbol= 'o';
+                    currentPosition = currentPosition - xSide; //nuova pos. attuale
+                    //system("clear");
                     printLabirint(&b[0], score);
                 }
-                else if (b[currentPosition - side] == '_') { //se ho completato il percorso
-                    b[currentPosition] = '.';
-                    b[currentPosition - side] = 'o';
+                else if (b[currentPosition - xSide].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol= '.';
+                    b[currentPosition - xSide].symbol= 'o';
                     score--;
-                    system("clear");
+                    //system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -451,30 +548,30 @@ void moving(char* b, int start, int score){ //muove il giocatore
 
             case 'S':
             case 's':
-                if (b[currentPosition +side] == ' ' || b[currentPosition + side] == '.' || b[currentPosition +side] == '$' || b[currentPosition +side] == '!'){ //se la posizione sotto la posizione attuale è parte del labirinto
-                    b[currentPosition] = '.';
-                    if (b[currentPosition + side] == '!'){ //se incontra un imprevisto
+                if (b[currentPosition +xSide].symbol==' ' || b[currentPosition + xSide].symbol=='.' || b[currentPosition +xSide].symbol=='$' || b[currentPosition +xSide].symbol=='!'){ //se la posizione sotto la posizione attuale è parte del labirinto
+                    b[currentPosition].symbol='.';
+                    if (b[currentPosition + xSide].symbol=='!'){ //se incontra un imprevisto
                         score -= coins*3/2; //toglie il punteggio
                         coins = coins/2; //dimezza numero di monete
                     }
-                    else if (b[currentPosition + side] == '$'){ // se incontra una moneta
+                    else if (b[currentPosition + xSide].symbol=='$'){ // se incontra una moneta
                         score += 3;
                         coins ++;
                     }
                     else { //altrimenti
                         score--;
                     }
-                    b[currentPosition + side] = 'o';
-                    currentPosition = currentPosition + side; //nuova pos. attuale
-                    system("clear");
+                    b[currentPosition + xSide].symbol='o';
+                    currentPosition = currentPosition + xSide; //nuova pos. attuale
+                    //system("clear");
                     printLabirint(&b[0], score);
                 }
 
-                else if (b[currentPosition + side] == '_') { //se ho completato il percorso
-                    b[currentPosition] = '.';
-                    b[currentPosition + side] = 'o';
+                else if (b[currentPosition + xSide].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol='.';
+                    b[currentPosition + xSide].symbol='o';
                     score--;
-                    system("clear");
+                    //system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -487,29 +584,29 @@ void moving(char* b, int start, int score){ //muove il giocatore
 
             case 'D':
             case 'd':
-                if (b[currentPosition +1] == ' ' || b[currentPosition + 1] == '.' || b[currentPosition +1] == '$' || b[currentPosition +1] == '!'){ //se la posizione a destra della posizione attuale è parte del labirinto
-                    b[currentPosition] = '.';
-                    if (b[currentPosition + 1] == '!'){ //se incontra un imprevisto
+                if (b[currentPosition +1].symbol==' ' || b[currentPosition + 1].symbol=='.' || b[currentPosition +1].symbol=='$' || b[currentPosition +1].symbol=='!'){ //se la posizione a destra della posizione attuale è parte del labirinto
+                    b[currentPosition].symbol='.';
+                    if (b[currentPosition + 1].symbol=='!'){ //se incontra un imprevisto
                         score -= coins*3/2; //toglie il punteggio
                         coins = coins/2; //dimezza numero di monete
                     }
-                    else if (b[currentPosition + 1] == '$'){ // se incontra una moneta
+                    else if (b[currentPosition + 1].symbol=='$'){ // se incontra una moneta
                         score += 3;
                         coins ++;
                     }
                     else { //altrimenti
                         score--;
                     }
-                    b[currentPosition + 1] = 'o';
+                    b[currentPosition + 1].symbol='o';
                     currentPosition = currentPosition + 1; //nuova pos. attuale
-                    system("clear");
+                    //system("clear");
                     printLabirint(&b[0], score);
                 }
-                else if (b[currentPosition + 1] == '_') { //se ho completato il percorso
-                    b[currentPosition] = '.';
-                    b[currentPosition + 1] = 'o';
+                else if (b[currentPosition + 1].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol='.';
+                    b[currentPosition + 1].symbol='o';
                     score--;
-                    system("clear");
+                    //system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -522,29 +619,29 @@ void moving(char* b, int start, int score){ //muove il giocatore
 
             case 'A':
             case 'a':
-                if  (b[currentPosition - 1] == ' ' || b[currentPosition - 1] == '.' || b[currentPosition -1] == '$' || b[currentPosition -1] == '!'){ //se la posizione a sinistra della posizione attuale è parte del labirinto
-                    b[currentPosition] = '.';
-                    if (b[currentPosition - 1] == '!'){ //se incontra un imprevisto
+                if  (b[currentPosition - 1].symbol==' ' || b[currentPosition - 1].symbol=='.' || b[currentPosition -1].symbol=='$' || b[currentPosition -1].symbol=='!'){ //se la posizione a sinistra della posizione attuale è parte del labirinto
+                    b[currentPosition].symbol='.';
+                    if (b[currentPosition - 1].symbol=='!'){ //se incontra un imprevisto
                         score -= coins*3/2; //toglie il punteggio
                         coins = coins/2; //dimezza numero di monete
                     }
-                    else if (b[currentPosition - 1] == '$'){ // se incontra una moneta
+                    else if (b[currentPosition - 1].symbol=='$'){ // se incontra una moneta
                         score += 3;
                         coins ++;
                     }
                     else { //altrimenti
                         score--;
                     }
-                    b[currentPosition - 1] = 'o';
+                    b[currentPosition - 1].symbol='o';
                     currentPosition = currentPosition - 1; //nuova pos. attuale
-                    system("clear");
+                    //system("clear");
                     printLabirint(&b[0], score);
                 }
-                else if (b[currentPosition - 1] == '_') { //se ho completato il percorso
-                    b[currentPosition] = '.';
-                    b[currentPosition - 1] = 'o';
+                else if (b[currentPosition - 1].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol='.';
+                    b[currentPosition - 1].symbol='o';
                     score--;
-                    system("clear");
+                    //system("clear");
                     printLabirint(&b[0], score);
                     success(score);
                     endGame = 1;
@@ -565,17 +662,18 @@ void moving(char* b, int start, int score){ //muove il giocatore
 
 int main(){
     srand(time(0)); //funzione che determina il seme per la randomizzazione
+    //aiAlgorithm();
     int score=0;
-    char board[side*side];
+    Box board[xSide*xSide];
     createBoard(&board[0]);
     int start = createLabirint(&board[0]);
     char mode = welcome();
-    mode = 'b';
-    if (mode == 'b' || mode == 'B'){
+    mode='b';
+    if (mode=='b' || mode=='B'){
         guide();
         moving(&board[0], start, score);
     }
-    else if(mode == 'a' || mode == 'A'){
+    else if(mode=='a' || mode=='A'){
         //to be defined
     }
     return 0;
