@@ -634,6 +634,158 @@ void moving(Box* b, int start, int score){ //muove il giocatore
         }
     }while(!endGame);
 }
+
+void RandomAlgorithm(Box* b, int start, int score){
+    int currentPosition = start;
+    printLabirint(&b[0], score);
+    int coins = 0; //monete raccolte
+    _Bool endGame=0;
+
+    do{
+        int move = rand()%4;
+    
+        switch(move){
+            case 0:
+                if (b[currentPosition -xSide].symbol==' ' || b[currentPosition - xSide].symbol=='.' || b[currentPosition -xSide].symbol=='$' || b[currentPosition -xSide].symbol=='!'){ //se la posizione sopra la posizione attuale è parte del labirinto
+                    b[currentPosition].symbol= '.';
+                    if (b[currentPosition - xSide].symbol=='!'){ //se incontra un imprevisto
+                        score -= coins*3/2; //toglie il punteggio
+                        coins = coins/2; //dimezza numero di monete
+                    }
+                    else if (b[currentPosition - xSide].symbol=='$'){ // se incontra una moneta
+                        score += 3;
+                        coins ++;
+                    }
+                    else { //altrimenti
+                        score--;
+                    }
+                    b[currentPosition - xSide].symbol= 'o';
+                    currentPosition = currentPosition - xSide; //nuova pos. attuale
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                }
+                else if (b[currentPosition - xSide].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol= '.';
+                    b[currentPosition - xSide].symbol= 'o';
+                    score--;
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                    success(score);
+                    endGame = 1;
+                }
+                /*else { //se la posizione sopra la posizione attuale è un muro o una parete
+                    death();
+                    endGame = 1;
+                }*/
+                break;
+            case 1:
+                if (b[currentPosition +xSide].symbol==' ' || b[currentPosition + xSide].symbol=='.' || b[currentPosition +xSide].symbol=='$' || b[currentPosition +xSide].symbol=='!'){ //se la posizione sotto la posizione attuale è parte del labirinto
+                    b[currentPosition].symbol='.';
+                    if (b[currentPosition + xSide].symbol=='!'){ //se incontra un imprevisto
+                        score -= coins*3/2; //toglie il punteggio
+                        coins = coins/2; //dimezza numero di monete
+                    }
+                    else if (b[currentPosition + xSide].symbol=='$'){ // se incontra una moneta
+                        score += 3;
+                        coins ++;
+                    }
+                    else { //altrimenti
+                        score--;
+                    }
+                    b[currentPosition + xSide].symbol='o';
+                    currentPosition = currentPosition + xSide; //nuova pos. attuale
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                }
+                else if (b[currentPosition + xSide].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol='.';
+                    b[currentPosition + xSide].symbol='o';
+                    score--;
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                    success(score);
+                    endGame = 1;
+                }
+               /* else { //se la posizione sotto la posizione attuale è un muro o una parete
+                    death();
+                    endGame = 1;
+                }*/
+                break;
+            case 2:
+                if (b[currentPosition +1].symbol==' ' || b[currentPosition + 1].symbol=='.' || b[currentPosition +1].symbol=='$' || b[currentPosition +1].symbol=='!'){ //se la posizione a destra della posizione attuale è parte del labirinto
+                    b[currentPosition].symbol='.';
+                    if (b[currentPosition + 1].symbol=='!'){ //se incontra un imprevisto
+                        score -= coins*3/2; //toglie il punteggio
+                        coins = coins/2; //dimezza numero di monete
+                    }
+                    else if (b[currentPosition + 1].symbol=='$'){ // se incontra una moneta
+                        score += 3;
+                        coins ++;
+                    }
+                    else { //altrimenti
+                        score--;
+                    }
+                    b[currentPosition + 1].symbol='o';
+                    currentPosition = currentPosition + 1; //nuova pos. attuale
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                }
+                else if (b[currentPosition + 1].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol='.';
+                    b[currentPosition + 1].symbol='o';
+                    score--;
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                    success(score);
+                    endGame = 1;
+                }
+                /*else { //se la posizione a destra della posizione attuale è un muro o una parete
+                    death();
+                    endGame = 1;
+                }*/
+                break;
+            case 3:
+                if  (b[currentPosition - 1].symbol==' ' || b[currentPosition - 1].symbol=='.' || b[currentPosition -1].symbol=='$' || b[currentPosition -1].symbol=='!'){ //se la posizione a sinistra della posizione attuale è parte del labirinto
+                    b[currentPosition].symbol='.';
+                    if (b[currentPosition - 1].symbol=='!'){ //se incontra un imprevisto
+                        score -= coins*3/2; //toglie il punteggio
+                        coins = coins/2; //dimezza numero di monete
+                    }
+                    else if (b[currentPosition - 1].symbol=='$'){ // se incontra una moneta
+                        score += 3;
+                        coins ++;
+                    }
+                    else { //altrimenti
+                        score--;
+                    }
+                    b[currentPosition - 1].symbol='o';
+                    currentPosition = currentPosition - 1; //nuova pos. attuale
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                }
+                else if (b[currentPosition - 1].symbol=='_') { //se ho completato il percorso
+                    b[currentPosition].symbol='.';
+                    b[currentPosition - 1].symbol='o';
+                    score--;
+                    //system("clear");
+                    printLabirint(&b[0], score);
+                    success(score);
+                    endGame = 1;
+                }
+                /*else { //se la posizione a sinistra della posizione attuale è un muro o una parete
+                    death();
+                    endGame = 1;
+                }*/
+                break;
+            default:
+                wrongInput();
+                break;
+        }
+    }while(!endGame);
+    
+
+}
+
 int main(){
     srand(time(0)); //funzione che determina il seme per la randomizzazione
     //aiAlgorithm();
@@ -641,7 +793,9 @@ int main(){
     Box board[xSide*ySide];
     createBoard(&board[0]);
     int start = createLabirint(&board[0]);
+
     char mode = welcome();
+    RandomAlgorithm(&board[0], start, score);
     mode='b';
     if (mode=='b' || mode=='B'){
         guide();
@@ -649,6 +803,7 @@ int main(){
     }
     else if(mode=='a' || mode=='A'){
         //to be defined
+        
     }
     return 0;
 }
