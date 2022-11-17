@@ -11,9 +11,11 @@
 //documentazione
 //cambiare dimensioni array con size_t come tipo
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 //#include "aiAlgorithms.h"
 
 struct box {
@@ -28,8 +30,8 @@ struct box {
 };
 typedef struct box Box;
 
-short unsigned xSide = 10u; //lunghezza del campo di gioco
-short unsigned ySide = 10u; //altezza del campo di gioco
+short unsigned xSide = 15u; //lunghezza del campo di gioco
+short unsigned ySide = 12u; //altezza del campo di gioco
 
 
 
@@ -53,13 +55,13 @@ int randomStart(){ //genera uno start in posizione casuale
             start=(rand()%(xSide-2))+1; //sceglie randomicamente un numero tra 1 e (xSide-2)
             break;
         case 1: //lato inferiore
-            start=rand()%(xSide-2) + 1 + ((xSide*ySide)-xSide); //sceglie randomicamente un numero tra ((xSide*xSide)-xSide+1) e (xSide*xSide-1)
+            start=rand()%(xSide-2) + 1 + ((xSide*ySide)-xSide); //sceglie randomicamente un numero tra ((xSide*ySide)-xSide+1) e (xSide*ySide-1)
             break;
         case 2: //lato sinistro
-            start=((rand()%(xSide-2))*xSide)+xSide;//sceglie randomicamente un numero tra xSide e (xSide*xSide)-xSide che modulo xSide dia 0
+            start=((rand()%(ySide-2))*xSide)+xSide;//sceglie randomicamente un numero tra xSide e (xSide*ySide)-xSide che modulo xSide dia 0
             break;
         case 3: //lato destro
-            start=((rand()%(xSide-2))*xSide)+xSide+xSide-1; //sceglie randomicamente un numero tra xSide+xSide-1 e (xSide*xSide)-xSide-1 che modulo xSide dia (xSide-1)
+            start=((rand()%(ySide-2))*xSide)+xSide+xSide-1; //sceglie randomicamente un numero tra xSide+xSide-1 e (xSide*ySide)-xSide-1 che modulo xSide dia (xSide-1)
             break;
         default:
             printf("Errore\n");
@@ -69,6 +71,7 @@ int randomStart(){ //genera uno start in posizione casuale
 }
 
 void randomEnd(int start, int* end){ // genera un end in posizione casuale in una parete diversa da quella dello start
+    int a;
     int dir[3];
     if (start<(xSide-1)){ //se lo start è posizionato sulla parete superiore
         dir[0]=1;
@@ -93,16 +96,20 @@ void randomEnd(int start, int* end){ // genera un end in posizione casuale in un
     short draft = rand()%3; //sceglie a caso uno num compreso tra 0 e 2
     switch(dir[draft]) {
         case 0: //lato superiore
-            *end=(rand()%(xSide-2))+1; //sceglie randomicamente un numero tra 1 e (xSide-2)
+            a = ((rand()%(xSide-2))+1);
+            *end=a; //sceglie randomicamente un numero tra 1 e (xSide-2)
             break;
         case 1: //lato inferiore
-            *end=rand()%(xSide-2) + 1 + ((xSide*ySide)-xSide); //sceglie randomicamente un numero tra ((xSide*xSide)-xSide+1) e (xSide*xSide-1)
+            a = (rand()%(xSide-2) + 1 + ((xSide*ySide)-xSide));
+            *end=a; //sceglie randomicamente un numero tra ((xSide*ySide)-xSide+1) e (xSide*ySide-1)
             break;
         case 2: //lato sinistro
-            *end=((rand()%(xSide-2))*xSide)+xSide;//sceglie randomicamente un numero tra xSide e (xSide*xSide)-xSide che modulo xSide dia 0
+            a = (((rand()%(ySide-2))*xSide)+xSide);
+            *end=a;//sceglie randomicamente un numero tra xSide e (xSide*ySide)-xSide che modulo xSide dia 0
             break;
         case 3: //lato destro
-            *end=((rand()%(xSide-2))*xSide)+xSide+xSide-1; //sceglie randomicamente un numero tra xSide+xSide-1 e (xSide*xSide)-xSide-1 che modulo xSide dia (xSide-1)
+            a = (((rand()%(ySide-2))*xSide)+xSide+xSide-1);
+            *end=a; //sceglie randomicamente un numero tra xSide+xSide-1 e (xSide*ySide)-xSide-1 che modulo xSide dia (xSide-1)
             break;
         default:
             printf("Errore\n");
@@ -111,11 +118,10 @@ void randomEnd(int start, int* end){ // genera un end in posizione casuale in un
 }
 
 void printLabirint(Box* b, int score){ //stampa il labirinto
-    printf("Sono entrato nella printLabirint\n");
+    //printf("Sono entrato nella printLabirint\n");
     for(int i = 0; i < ySide; i++){
         for(int j = 0; j < xSide; j++){
-            printf("%c "
-                   "", b[i*xSide+j].symbol);
+            printf("%c ", b[i*xSide+j].symbol);
         }
         printf("\n");
     }
@@ -144,65 +150,9 @@ void randomBombs(Box *b) { //posiziona un numero casuale di imprevisti (!) in po
     }
 }
 
-/*
-void randomWallsSimple(char *b){ //genera muri partendo dai lati della campo. Non genera rami figli. Buggato
-    int numOfWalls = (rand()%(xSide/4)) +15; //determina il numero di muri
-    for (int i=0; i< numOfWalls; i++){
-        int base;
-        int k=(rand()%((xSide/3)*2))+1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/2 +1)
-        short randomSide = rand()%4; //determina il lato dal quale partira' il muro
-        switch(randomSide) {
-            case 0: //lato superiore
-                base=rand()%xSide; //sceglie randomicamente un numero tra 0 e xSide
-                if(b[base].symbol!='o' && b[base].symbol!='_'){ //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base+xSide+xSide] != '#' && b[base+xSide+xSide-1] != '#' && b[base+xSide+xSide+1] != '#' && k>0){ //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base+xSide].symbol='#';
-                        base += xSide;
-                        k--;
-                    }
-                }
-                break;
-            case 1: //lato inferiore
-                base=rand()%xSide + ((xSide*xSide)-xSide); //sceglie randomicamente un numero tra ((xSide*xSide)-xSide) e (xSide*xSide)
-                if(b[base].symbol!='o' && b[base].symbol!='_'){ //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base-xSide-xSide] != '#' && b[base-xSide-xSide-1] != '#' && b[base-xSide-xSide+1] != '#' && k>0) { //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base - xSide].symbol='#';
-                        base -= xSide;
-                        k--;
-                    }
-                }
-                break;
-            case 2: //lato sinistro
-                base=(rand()%xSide)*xSide; //sceglie randomicamente un numero tra 0 e (xSide*xSide) che modulo xSide dia 0
-                if(b[base].symbol!='o' && b[base].symbol!='_') { //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base + 2] != '#' && b[base-xSide+2] != '#' && b[base+xSide+2] != '#' && k>0) { //finché non sta per incrociare un altro muro' o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base + 1].symbol='#';
-                        base += 1;
-                        k--;
-                    }
-                }
-                break;
-            case 3: //lato destro
-                base=(rand()%xSide)*xSide-1; //sceglie randomicamente un numero tra 0 e (xSide*xSide) che modulo xSide dia (xSide-1)
-                if(b[base].symbol!='o' && b[base].symbol!='_') { //se il punto da cui parte il muro non è lo start o l'end
-                    while (b[base - 2] != '#' && b[base-xSide-2] != '#' && b[base+xSide-2] != '#' && k>0) { //finché non sta per incrociare un altro muro o finché non raggiunge la lunghezza randomica stabilita precedentemente
-                        b[base - 1].symbol='#';
-                        base -= 1;
-                        k--;
-                    }
-                }
-                break;
-            default:
-                printf("Errore\n");
-                break;
-        }
-    }
-}
-*/
-
 void randomFlyingWalls(Box *b) { //posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
     int numOfWalls = (rand()%xSide); //determina randomicamente il numero di muri
-    int d;
+    int d; // determina il numero massimo di ripetizioni, serve per non entrare in loop nel caso in cui non ci siano più spazi liberi in cui inserire muri
     int k = (rand() % ((xSide/2))) +1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
     int base;
     for (int i = 0; i < numOfWalls; i++) {
@@ -271,11 +221,11 @@ void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni cas
     int k=(rand()%((xSide/3)*2))+2; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
     int base;
     for (int i=0; i< numOfWalls; i++) {
-        d = xSide*ySide*xSide;
+        d = xSide*ySide*xSide; // determina il numero massimo di ripetizioni, serve per non entrare in loop nel caso in cui non ci siano più spazi liberi in cui inserire muri
         do {
             base = rand()%(xSide*ySide);
             d--;
-        } while ((b[base].symbol!='#' || base==0 ||  base==(xSide-1) || base==((xSide*xSide)-1) || base==((xSide*xSide)-xSide+1)) && d>0); //se la casella scelta e' un angolo o se non contiene '#'
+        } while ((b[base].symbol!='#' || base==0 ||  base==(xSide-1) || base==((xSide*ySide)-1) || base==((xSide*ySide)-xSide+1)) && d>0); //se la casella scelta e' un angolo o se non contiene '#'
         if (d>0){
             if (base<(xSide-1)){ //se la casella scelta fa parte della parete superiore
                 while (b[base+xSide-1].symbol!='#' && b[base+xSide].symbol!='#' && b[base+xSide+1].symbol!='#' && b[base+xSide+xSide-1].symbol!='#' && b[base+xSide+xSide].symbol!='#' && b[base+xSide+xSide+1].symbol!='#' &&
@@ -287,7 +237,7 @@ void randomWalls(Box *b){ //posiziona un numero casuale di muri in posizioni cas
                     k--;
                 }
             }
-            else if (base>((xSide*xSide)-xSide+1) && base<((xSide*xSide)-1)){ //se la casella scelta fa parte della parete inferiore
+            else if (base>((xSide*ySide)-xSide+1) && base<((xSide*ySide)-1)){ //se la casella scelta fa parte della parete inferiore
                 while (b[base-xSide-1].symbol!='#' && b[base-xSide].symbol!='#' && b[base-xSide+1].symbol!='#' && b[base-xSide-xSide-1].symbol!='#' && b[base-xSide-xSide].symbol!='#' && b[base-xSide-xSide+1].symbol!='#' &&
                        b[base-xSide-1].symbol!='_' && b[base-xSide].symbol!='_' && b[base-xSide+1].symbol!='_' && b[base-xSide-xSide-1].symbol!='_' && b[base-xSide-xSide].symbol!='_' && b[base-xSide-xSide+1].symbol!='_' &&
                        b[base-xSide-1].symbol!='o' && b[base-xSide].symbol!='o' && b[base-xSide+1].symbol!='o' && b[base-xSide-xSide-1].symbol!='o' && b[base-xSide-xSide].symbol!='o' && b[base-xSide-xSide+1].symbol!='o' && k>0){
@@ -773,7 +723,7 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
 
 
 
-char* aStarAlgorithm(Box* b, int start, int* end, char* moves){
+void aStarAlgorithm(Box* b, int start, int* end, char* moves){
 
     /* Prendo in input il campo di gioco, il punto di start e quello di end.
      * Inizializzo il nodo start con gCost (distanza dallo start) è = 0 mentre hCost (distanza da end) è = xDist+yDist (distanza sulle ascisse + distanza sulle ordinate).
@@ -847,7 +797,7 @@ char* aStarAlgorithm(Box* b, int start, int* end, char* moves){
         candidates[size] = b[start + xSide];
         size++;
     }
-    else if (start>((xSide*xSide)-xSide)){ //se lo start è posizionato sulla parete inferiore
+    else if (start>((xSide*ySide)-xSide)){ //se lo start è posizionato sulla parete inferiore
         //printf("Sono entrato nell'if alto\n");
         b[start - xSide].gCost = 1 + b[start].gCost;
         xDist = abs(((start - xSide) % xSide) - *end % xSide);
@@ -1078,7 +1028,7 @@ char* aStarAlgorithm(Box* b, int start, int* end, char* moves){
         }
     }
 
-    short predecessors[xSide*ySide/2]; //vettore che contiene tutti i predecessori
+    short predecessors[xSide*ySide]; //vettore che contiene tutti i predecessori
     int j = 0;
     //printf("   b[k].predecessor prima del ciclo while = %d \n", b[k].predecessor);
     while (k!=start){
@@ -1110,7 +1060,7 @@ char* aStarAlgorithm(Box* b, int start, int* end, char* moves){
         printf("%d ", path[p]);
     }*/
 
-    printLabirint(&b[0],10);
+    printLabirint(&b[0],score);
     //printf("\n");
 
     for (int h = 0; h<j; h++ ){
@@ -1119,7 +1069,6 @@ char* aStarAlgorithm(Box* b, int start, int* end, char* moves){
     }
     b[path[j]].symbol='o';
     k=0;
-    printLabirint(&b[0], 10);
 
     for (int i =1; i<=j; i++){
         if (path[i]==path[i-1]-xSide)//se va verso l'alto
@@ -1132,11 +1081,24 @@ char* aStarAlgorithm(Box* b, int start, int* end, char* moves){
             moves[k]='O';
         k++;
     }
-
-    return moves;
+    score = 1000-j+(b[*end].numCoins)*10;
+    printLabirint(&b[0], score);
+    //printf("Numero di monete al termine della partita: %d\n", b[*end].numCoins);
+    //printf("Numero di mosse della partita: %d\n", j);
 }
 
-
+void challenge(Box *b, int start, int* end, char* moves){
+    //int ySide, xSide;
+    scanf("%d", &ySide);
+    scanf("%d", &xSide);
+    int i;
+    scanf("%[^\n]s", b);
+    for (i=1; i<ySide; i++){
+        scanf("%[^\n]s", b + xSide);
+    }
+    aStarAlgorithm(&b[0], start, end, moves);
+    printf("%s\n\n", moves);
+}
 
 int main(int argc, char *argv[]){
     srand(time(NULL)); //funzione che determina il seme per la randomizzazione
@@ -1147,9 +1109,12 @@ int main(int argc, char *argv[]){
     //printf("Step 1\n");
     createBoard(&board[0]);
     //printf("Step 2\n");
-    int *end;
+    int *end = (int*)malloc(sizeof(int));
     int start = createLabirint(&board[0], end);
     //printf("Step 3\n");
+    if (argc==2 && strcmp(argv[1], "--challenge")==0){
+        challenge(&board[0], start, end, moves);
+    }
     char mode = welcome();
     //printf("Step 4\n");
     scanf("%c", &choose);
@@ -1166,10 +1131,13 @@ int main(int argc, char *argv[]){
         free(moves);
     }
     else if(choose == 'c' || choose == 'C'){
-        moves = aStarAlgorithm(&board[0], start, end, moves);
-        printf("%s\n\n", moves);
+        aStarAlgorithm(&board[0], start, end, moves);
+        printf("%s", moves);
+        printf("\n");
         free(moves);
     }
+
+    free(end);
 
     return 0;
 }
