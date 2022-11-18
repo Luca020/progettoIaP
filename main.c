@@ -717,7 +717,7 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
 
 void aStarAlgorithm(Box* b, int start, int* end, char* moves){
 
-    printf("Sono dentro la aStarLabirint\n");
+    //printf("Sono dentro la aStarLabirint\n");
     /* Prendo in input il campo di gioco, il punto di start e quello di end.
      * Inizializzo il nodo start con gCost (distanza dallo start) è = 0 mentre hCost (distanza da end) è = xDist+yDist (distanza sulle ascisse + distanza sulle ordinate).
      * La reference di start è pari a start.
@@ -1021,7 +1021,7 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
         }
     }
 
-    short predecessors[xSide*ySide]; //vettore che contiene tutti i predecessori
+    int* predecessors = (int*)malloc(sizeof(int)*xSide*ySide);//short predecessors[xSide*ySide]; //vettore che contiene tutti i predecessori
     int j = 0;
     //printf("   b[k].predecessor prima del ciclo while = %d \n", b[k].predecessor);
     while (k!=start){
@@ -1053,14 +1053,14 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
         printf("%d ", path[p]);
     }*/
 
-    printLabirint(&b[0],score);
+    //printLabirint(&b[0],score);
     //printf("\n");
 
     for (int h = 0; h<j; h++ ){
         //printf("Sono entrato nell'ultimo for\n");
         b[path[h]].symbol='.';
     }
-    b[path[j]].symbol='o';
+    b[predecessors[0]].symbol='o';
     k=0;
 
     for (int i =1; i<=j; i++){
@@ -1074,16 +1074,18 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             moves[k]='O';
         k++;
     }
+    moves[k]='\0';
     score = 1000-j+(b[*end].numCoins)*10;
-    printLabirint(&b[0], score);
+    free(predecessors);
+    //printLabirint(&b[0], score);
     //printf("Numero di monete al termine della partita: %d\n", b[*end].numCoins);
     //printf("Numero di mosse della partita: %d\n", j);
 }
 
 void challenge(Box *b, int start, int* end, char* moves){
     printf("MODALITA' SFIDA!\n");
-    scanf("%hd", &ySide); //num righe
     scanf("%hd", &xSide); //num colonne
+    scanf("%hd", &ySide); //num righe
     int i;
     char* s = (char*)malloc(sizeof(char)*xSide); //stringa di input
     for (i=0; i<ySide; i++){
@@ -1093,9 +1095,9 @@ void challenge(Box *b, int start, int* end, char* moves){
         int j;
         for(j=0;j<xSide;j++){
             b[i*xSide+j].symbol=s[j];
-
         }
     }
+    free(s);
 
     _Bool found =0;
     i=0;
@@ -1135,6 +1137,8 @@ int main(int argc, char *argv[]){
     int start = createLabirint(&board[0], end);
     if (argc==2 && strcmp(argv[1], "--challenge")==0){
         challenge(&board[0], start, end, moves);
+        printf("%s\n", moves);
+        exit(0);
     }
     //printf("Step 3\n");
     char mode = welcome();
