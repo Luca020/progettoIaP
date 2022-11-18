@@ -30,8 +30,8 @@ struct box {
 };
 typedef struct box Box;
 
-short unsigned xSide = 15u; //lunghezza del campo di gioco
-short unsigned ySide = 12u; //altezza del campo di gioco
+unsigned short xSide = 15u; //lunghezza del campo di gioco
+unsigned short ySide = 12u; //altezza del campo di gioco
 
 
 
@@ -354,17 +354,10 @@ int createLabirint(Box* b, int * end){
 
 char welcome(){
     printf("Benvenuto! In che modalita' vuoi giocare?\n");
-    printf("Per modalita' AI random premere 'a'\n");
-    printf("Per modalita' utente premere 'b'\n");
+    printf("Per modalita' utente premere 'a'\n");
+    printf("Per modalita' AI random premere 'b'\n");
     printf("Per modalita' AI avanzata premere 'c'");
     printf("\n");
-    //char mode;
-    /*do {
-        mode = scanf("%c", &mode);
-        printf("%c\n", mode);
-    } while (mode != 'a' && mode != 'A' && mode != 'b' && mode != 'B');*/ //finché non viene immesso un carattere valido
-    /*mode = scanf("%c", &mode);
-    return mode;*/
 }
 
 void guide(){ //informazioni per il giocatore
@@ -391,8 +384,7 @@ void success(int score){ //il giocatore è giunto a destinazione
 }
 
 void wrongInput(){ //il giocatore ha inserito in input non corretto
-    printf("Input non corretto, reinserirlo.");
-    printf("\n");
+    printf("Input non corretto, reinserirlo.\n");
 }
 
 void moving(Box* b, int start, int score, char* v){ //muove il giocatore
@@ -408,7 +400,7 @@ void moving(Box* b, int start, int score, char* v){ //muove il giocatore
         switch(move){
             case 'W':
             case 'w':
-                *pt = 'W';
+                *pt = 'N';
                 pt++;
                 if (b[currentPosition -xSide].symbol==' ' || b[currentPosition - xSide].symbol=='.' || b[currentPosition -xSide].symbol=='$' || b[currentPosition -xSide].symbol=='!'){ //se la posizione sopra la posizione attuale è parte del labirinto
                     b[currentPosition].symbol= '.';
@@ -483,7 +475,7 @@ void moving(Box* b, int start, int score, char* v){ //muove il giocatore
 
             case 'D':
             case 'd':
-                *pt = 'D';
+                *pt = 'E';
                 pt++;
                 if (b[currentPosition +1].symbol==' ' || b[currentPosition + 1].symbol=='.' || b[currentPosition +1].symbol=='$' || b[currentPosition +1].symbol=='!'){ //se la posizione a destra della posizione attuale è parte del labirinto
                     b[currentPosition].symbol='.';
@@ -520,7 +512,7 @@ void moving(Box* b, int start, int score, char* v){ //muove il giocatore
 
             case 'A':
             case 'a':
-                *pt = 'A';
+                *pt = 'O';
                 pt++;
                 if  (b[currentPosition - 1].symbol==' ' || b[currentPosition - 1].symbol=='.' || b[currentPosition -1].symbol=='$' || b[currentPosition -1].symbol=='!'){ //se la posizione a sinistra della posizione attuale è parte del labirinto
                     b[currentPosition].symbol='.';
@@ -589,7 +581,7 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
                     b[currentPosition - xSide].symbol= 'o';
                     currentPosition = currentPosition - xSide; //nuova pos. attuale
                     //system("clear");
-                    *pt = 'W';
+                    *pt = 'N';
                     pt++;
                     printLabirint(&b[0], score);
                 }
@@ -602,10 +594,10 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
                     success(score);
                     endGame = 1;
                 }
-                 /* else { //se la posizione sotto la posizione attuale è un muro o una parete
-                    death();
-                    endGame = 1;
-                }*/
+                /* else { //se la posizione sotto la posizione attuale è un muro o una parete
+                   death();
+                   endGame = 1;
+               }*/
                 break;
             case 1:
                 if (b[currentPosition +xSide].symbol==' ' || b[currentPosition + xSide].symbol=='.' || b[currentPosition +xSide].symbol=='$' || b[currentPosition +xSide].symbol=='!'){ //se la posizione sotto la posizione attuale è parte del labirinto
@@ -637,10 +629,10 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
                     success(score);
                     endGame = 1;
                 }
-               /* else { //se la posizione sotto la posizione attuale è un muro o una parete
-                    death();
-                    endGame = 1;
-                }*/
+                /* else { //se la posizione sotto la posizione attuale è un muro o una parete
+                     death();
+                     endGame = 1;
+                 }*/
                 break;
             case 2:
                 if (b[currentPosition +1].symbol==' ' || b[currentPosition + 1].symbol=='.' || b[currentPosition +1].symbol=='$' || b[currentPosition +1].symbol=='!'){ //se la posizione a destra della posizione attuale è parte del labirinto
@@ -658,7 +650,7 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
                     }
                     b[currentPosition + 1].symbol='o';
                     currentPosition = currentPosition + 1; //nuova pos. attuale
-                    *pt = 'D';
+                    *pt = 'E';
                     pt++;
                     //system("clear");
                     printLabirint(&b[0], score);
@@ -694,7 +686,7 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
                     b[currentPosition - 1].symbol='o';
                     currentPosition = currentPosition - 1; //nuova pos. attuale
                     //system("clear");
-                    *pt = 'A';
+                    *pt = 'O';
                     pt++;
                     printLabirint(&b[0], score);
                 }
@@ -718,13 +710,14 @@ void randomAlgorithm(Box* b, int start, int score, char* v){
         }
     }
     while(!endGame);
-        *pt = '\0';
+    *pt = '\0';
 }
 
 
 
 void aStarAlgorithm(Box* b, int start, int* end, char* moves){
 
+    printf("Sono dentro la aStarLabirint\n");
     /* Prendo in input il campo di gioco, il punto di start e quello di end.
      * Inizializzo il nodo start con gCost (distanza dallo start) è = 0 mentre hCost (distanza da end) è = xDist+yDist (distanza sulle ascisse + distanza sulle ordinate).
      * La reference di start è pari a start.
@@ -860,14 +853,14 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
         min = xSide*ySide;
         //printf("\n");
         for (int j = 0; j < size; j++) {
-           /* printf("\ncandidates[%d].extracted: %d\n",j, candidates[j].extracted);
-            printf("  t: %d\n", candidates[j].reference);
-            printf("  candidates[%d].predecessor: %d\n",j, candidates[j].predecessor);
-            printf("  candidates[%d].numCoins: %d\n",j, candidates[j].numCoins);
-            printf("  candidates[%d].hCost: %d\n",j, candidates[j].hCost);
-            printf("  candidates[%d].gCost: %d\n",j, candidates[j].gCost);
-            printf("  candidates[%d].fCost: %d\n",j, candidates[j].gCost + candidates[j].hCost - candidates[j].numCoins*10);
-           */ if (candidates[j].gCost + candidates[j].hCost - candidates[j].numCoins*10 <= min && candidates[j].extracted==0) {
+            /* printf("\ncandidates[%d].extracted: %d\n",j, candidates[j].extracted);
+             printf("  t: %d\n", candidates[j].reference);
+             printf("  candidates[%d].predecessor: %d\n",j, candidates[j].predecessor);
+             printf("  candidates[%d].numCoins: %d\n",j, candidates[j].numCoins);
+             printf("  candidates[%d].hCost: %d\n",j, candidates[j].hCost);
+             printf("  candidates[%d].gCost: %d\n",j, candidates[j].gCost);
+             printf("  candidates[%d].fCost: %d\n",j, candidates[j].gCost + candidates[j].hCost - candidates[j].numCoins*10);
+            */ if (candidates[j].gCost + candidates[j].hCost - candidates[j].numCoins*10 <= min && candidates[j].extracted==0) {
                 min = candidates[j].gCost + candidates[j].hCost - candidates[j].numCoins*10;
                 //printf("    MINIMO\n");
                 i = j;
@@ -881,8 +874,8 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
         b[t].hCost=candidates[i].hCost;
         b[t].gCost=candidates[i].gCost;
 
-    /*    printf("\n\n!b[t - xSide].visited = %d,\nt>=xSide = %d\nb[t - xSide].symbol = %c\nb[t].predecessor != t -xSide = %d\n\n"
-                , !b[t - xSide].visited, t>=xSide,b[t - xSide].symbol, b[t].predecessor != t -xSide);*/
+        /*    printf("\n\n!b[t - xSide].visited = %d,\nt>=xSide = %d\nb[t - xSide].symbol = %c\nb[t].predecessor != t -xSide = %d\n\n"
+                    , !b[t - xSide].visited, t>=xSide,b[t - xSide].symbol, b[t].predecessor != t -xSide);*/
 
         if (!b[t - xSide].visited && t>=xSide && b[t - xSide].symbol != '#' && b[t - xSide].symbol != 'o' && b[t].predecessor != t -xSide) { //casella alta se essa non è un muro e se non è il predecessore del nodo predecessore
             //printf("Sono entrato nell'if alto\n");
@@ -905,11 +898,11 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             b[t - xSide].visited = 1;
             candidates[size] = b[t - xSide];
 
-           /* printf("   candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n"
-                   "   candidates[size].fCost: %d\n   candidates[size].reference: %d\n\n", candidates[size].symbol,
-                   candidates[size].predecessor, candidates[size].numCoins,
-                   candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
-           */
+            /* printf("   candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n"
+                    "   candidates[size].fCost: %d\n   candidates[size].reference: %d\n\n", candidates[size].symbol,
+                    candidates[size].predecessor, candidates[size].numCoins,
+                    candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
+            */
             size++;
             if (b[t - xSide].symbol == '_') {
                 arrived = 1;
@@ -917,11 +910,11 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             }
         }
 
-      //  printf("\n\n!b[t +1 ].visited = %d,\nb[t+1].symbol = %c\nb[t].predecessor != t + 1 = %d\n\n"
+        //  printf("\n\n!b[t +1 ].visited = %d,\nb[t+1].symbol = %c\nb[t].predecessor != t + 1 = %d\n\n"
         //        , !b[t +1].visited, b[t +1].symbol, b[t].predecessor != t +1);
 
         if (!b[t + 1].visited && b[t + 1].symbol != '#' && b[t + 1].symbol != 'o' && b[t].predecessor != t +1) { //casella a destra se essa non è un muro e se non è il predecessore del nodo predecessore
-       //     printf("Sono entrato nell'if destro\n");
+            //     printf("Sono entrato nell'if destro\n");
             b[t + 1].numCoins = b[t].numCoins;
             b[t + 1].gCost = 1 + b[t].gCost;
             xDist = abs(((t + 1) % xSide) - *end % xSide);
@@ -941,25 +934,25 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             b[t + 1].visited = 1;
             candidates[size] = b[t + 1];
 
-        /*    printf("   candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n"
-                   "   candidates[size].fCost: %d\n   candidates[size].reference: %d\n\n", candidates[size].symbol,
-                   candidates[size].predecessor, candidates[size].numCoins,
-                   candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
-           */
+            /*    printf("   candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n"
+                       "   candidates[size].fCost: %d\n   candidates[size].reference: %d\n\n", candidates[size].symbol,
+                       candidates[size].predecessor, candidates[size].numCoins,
+                       candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
+               */
             size++;
             if (b[t + 1].symbol == '_'){
-            //    printf("Sono entrato nell'if finale\n");
+                //    printf("Sono entrato nell'if finale\n");
                 arrived = 1;
                 k=t+1;
                 //printf("k=%d\n", k);
             }
         }
 
-      //  printf("\n\n!b[t + xSide].visited = %d,\nt<xSide*ySide-xSide = %d\nb[t + xSide].symbol = %c\nb[t].predecessor != t +xSide = %d\n\n"
-      //          , !b[t + xSide].visited, t<xSide*ySide-xSide,b[t + xSide].symbol, b[t].predecessor != t +xSide);
+        //  printf("\n\n!b[t + xSide].visited = %d,\nt<xSide*ySide-xSide = %d\nb[t + xSide].symbol = %c\nb[t].predecessor != t +xSide = %d\n\n"
+        //          , !b[t + xSide].visited, t<xSide*ySide-xSide,b[t + xSide].symbol, b[t].predecessor != t +xSide);
 
         if (!b[t + xSide].visited && t<xSide*ySide-xSide && b[t + xSide].symbol != 'o' && b[t + xSide].symbol != '#' && b[t].predecessor != t +xSide) { //casella bassa se essa non è un muro e se non è il predecessore del nodo predecessore
-       //     printf("Sono entrato nell'if basso\n");
+            //     printf("Sono entrato nell'if basso\n");
             b[t + xSide].numCoins = b[t].numCoins;
             b[t + xSide].gCost = 1 + b[t].gCost;
             xDist = abs(((t + xSide) % xSide) - *end % xSide);
@@ -979,11 +972,11 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             b[t + xSide].visited = 1;
             candidates[size] = b[t + xSide];
 
-        /*    printf("candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n   candidates[size].fCost: %d,"
-                   "\n   candidates[size].reference: %d\n\n", candidates[size].symbol,
-                   candidates[size].predecessor, candidates[size].numCoins,
-                   candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
-         */
+            /*    printf("candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n   candidates[size].fCost: %d,"
+                       "\n   candidates[size].reference: %d\n\n", candidates[size].symbol,
+                       candidates[size].predecessor, candidates[size].numCoins,
+                       candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
+             */
             size++;
             if (b[t + xSide].symbol == '_'){
                 arrived = 1;
@@ -991,11 +984,11 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             }
         }
 
-     //   printf("\n\n!b[t -1 ].visited = %d,\nb[t-1].symbol = %c\nb[t].predecessor != t -1 = %d\n\n"
-       //         , !b[t -1].visited, b[t -1].symbol, b[t].predecessor != t -1);
+        //   printf("\n\n!b[t -1 ].visited = %d,\nb[t-1].symbol = %c\nb[t].predecessor != t -1 = %d\n\n"
+        //         , !b[t -1].visited, b[t -1].symbol, b[t].predecessor != t -1);
 
         if (!b[t - 1].visited && b[t - 1].symbol != '#' && b[t - 1].symbol != 'o' && b[t].predecessor != t -1) { //casella a sinistra se essa non è un muro e se non è il predecessore del nodo predecessore
-      //      printf("Sono entrato nell'if sinistro\n");
+            //      printf("Sono entrato nell'if sinistro\n");
             b[t - 1].numCoins = b[t].numCoins;
             b[t - 1].gCost = 1 + b[t].gCost;
             xDist = abs(((t - 1) % xSide) - *end % xSide);
@@ -1015,11 +1008,11 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
             b[t - 1].visited = 1;
             candidates[size] = b[t - 1];
 
-        /*    printf("candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n   candidates[size].fCost: %d,\n"
-                   "   candidates[size].reference: %d\n\n", candidates[size].symbol,
-                   candidates[size].predecessor, candidates[size].numCoins,
-                   candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
-         */
+            /*    printf("candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n   candidates[size].fCost: %d,\n"
+                       "   candidates[size].reference: %d\n\n", candidates[size].symbol,
+                       candidates[size].predecessor, candidates[size].numCoins,
+                       candidates[size].gCost + candidates[size].hCost - candidates[size].numCoins*10, candidates[size].reference);
+             */
             size++;
             if (b[t - 1].symbol == '_') {
                 arrived = 1;
@@ -1088,16 +1081,45 @@ void aStarAlgorithm(Box* b, int start, int* end, char* moves){
 }
 
 void challenge(Box *b, int start, int* end, char* moves){
-    //int ySide, xSide;
-    scanf("%d", &ySide);
-    scanf("%d", &xSide);
+    printf("MODALITA' SFIDA!\n");
+    scanf("%hd", &ySide); //num righe
+    scanf("%hd", &xSide); //num colonne
     int i;
-    scanf("%[^\n]s", b);
-    for (i=1; i<ySide; i++){
-        scanf("%[^\n]s", b + xSide);
+    char* s = (char*)malloc(sizeof(char)*xSide); //stringa di input
+    for (i=0; i<ySide; i++){
+        //scanf("%[^\n]s", s);
+        scanf(" %[^\n]s", s);
+        //printf("s = %s\n", s);
+        int j;
+        for(j=0;j<xSide;j++){
+            b[i*xSide+j].symbol=s[j];
+
+        }
     }
+
+    _Bool found =0;
+    i=0;
+
+    while (!found){ //cerco lo start
+        if (b[i].symbol=='o'){
+            start = i;
+            found =1;
+        }
+        i++;
+    }
+
+    found = 0;
+    i=0;
+
+    while (!found){ //cerco l'end
+        if (b[i].symbol=='_'){
+            *end = i;
+            found =1;
+        }
+        i++;
+    }
+
     aStarAlgorithm(&b[0], start, end, moves);
-    printf("%s\n\n", moves);
 }
 
 int main(int argc, char *argv[]){
@@ -1111,32 +1133,38 @@ int main(int argc, char *argv[]){
     //printf("Step 2\n");
     int *end = (int*)malloc(sizeof(int));
     int start = createLabirint(&board[0], end);
-    //printf("Step 3\n");
     if (argc==2 && strcmp(argv[1], "--challenge")==0){
         challenge(&board[0], start, end, moves);
     }
+    //printf("Step 3\n");
     char mode = welcome();
     //printf("Step 4\n");
-    scanf("%c", &choose);
-    if (choose=='b' || choose=='B'){
-        moving(&board[0], start, score, moves);
-        printf("%s\n", moves);
-        free(moves);
-    }
-    else if(choose=='a' || choose=='A'){
-        //to be defined
-        guide();
-        randomAlgorithm(&board[0], start, score, moves);
-        printf("%s\n", moves);
-        free(moves);
-    }
-    else if(choose == 'c' || choose == 'C'){
-        aStarAlgorithm(&board[0], start, end, moves);
-        printf("%s", moves);
-        printf("\n");
-        free(moves);
+    _Bool wrongChar = 1;
+    while (wrongChar){
+        scanf("%c", &choose);
+
+        if(choose=='a' || choose=='A') {
+            guide();
+            moving(&board[0], start, score, moves);
+            wrongChar=0;
+        }
+        else if (choose=='b' || choose=='B'){
+            randomAlgorithm(&board[0], start, score, moves);
+            wrongChar=0;
+        }
+
+        else if(choose == 'c' || choose == 'C'){
+            aStarAlgorithm(&board[0], start, end, moves);
+            wrongChar=0;
+        }
+
+        else {
+            wrongInput();
+        }
     }
 
+    printf("%s\n", moves);
+    free(moves);
     free(end);
 
     return 0;
