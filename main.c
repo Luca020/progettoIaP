@@ -162,31 +162,59 @@ void printLabirint(Box* board, int score, size_t xSide, size_t ySide){ //stampa 
     printf("\n");
 }
 
-void randomCoins(Box *board, size_t xSide, size_t ySide, int difficulty){ //posiziona un numero casuale di monete in posizioni casuali
-    
-    short numOfCoins;
-    numOfCoins = (rand()%(xSide*3))+5; //determina il numero di monete. Minimo 10, massimo (xSide+9)
+void createObjects(Box *board, size_t xSide, size_t ySide, short numOfObjects, char typeObject){
 
-    for (int i=0; i<numOfCoins; i++) {
+    short objects;
+    
+    for(int i = 0; i < numOfObjects; i++){
+        objects = rand()%(xSide*ySide);
+        if (board[objects].symbol!='#' && board[objects].symbol!='_' && board[objects].symbol!= 'o' && typeObject == '$'){
+            board[objects].symbol= '$';
+        }
+        if(board[objects].symbol!= '#' && board[objects].symbol != '_' && board[objects].symbol!= '$' && board[objects].symbol!= 'o' && board[objects].symbol != '!' && typeObject == 'T'){
+            board[objects].symbol = 'T';
+        }
+        if (board[objects].symbol!= '#' && board[objects].symbol!= '_' && board[objects].symbol!= '$' && board[objects].symbol!= 'o' && typeObject == '!') {
+            board[objects].symbol= '!';
+        }
+    }
+    
+}
+void randomCoins(Box* board, size_t xSide, size_t ySide){ //posiziona un numero casuale di monete in posizioni casuali
+    char typeObject = '$';
+    short numOfCoins = (rand()%(xSide*3))+5; //determina il numero di monete. Minimo 10, massimo (xSide+9)
+    createObjects(&board[0], xSide, ySide, numOfCoins, typeObject);
+  /*  for (int i=0; i<numOfCoins; i++) {
         int coin = rand()%(xSide*ySide);
         if (board[coin].symbol!='#' && board[coin].symbol!='_' && board[coin].symbol!= 'o'){
             board[coin].symbol= '$';}
 
-    }
+    }*/
 
 }
 
-void randomBombs(Box *board, size_t xSide, size_t ySide, int difficulty) { //posiziona un numero casuale di imprevisti (!) in posizioni casuali
-    
-    short numOfBombs;
+void randomDrill(Box* board,size_t xSide, size_t ySide){
+    char typeObject = 'T';
+    short numOfDrill = (rand()%(xSide/2))+5;
+    createObjects(&board[0], xSide, ySide, numOfDrill, typeObject); 
+    /*for(int i = 0; i < numOfDrill; i++){
+        int drill = rand() % (xSide*ySide);
+        if(b[drill].symbol!= '#' && b[drill].symbol != '_' && b[drill].symbol!= '$' && b[drill].symbol!= 'o' && b[drill].symbol != '!')
+            b[drill].symbol = 'T';
+    }*/
+}
 
-    numOfBombs = (rand()%xSide)+5; //determina il numero di imprevisti. Minimo 5, massimo (xSide+4)
-    for (int i = 0; i < numOfBombs; i++) {
+
+void randomBombs(Box* board, size_t xSide, size_t ySide) { //posiziona un numero casuale di imprevisti (!) in posizioni casuali
+    char typeObject = '!';
+    short numOfBombs = (rand()%xSide)+5; //determina il numero di imprevisti. Minimo 5, massimo (xSide+4)
+    createObjects(&board[0], xSide, ySide, numOfBombs, typeObject);
+    /*for (int i = 0; i < numOfBombs; i++) {
             int bomb = rand() % (xSide * ySide);
             if (board[bomb].symbol!= '#' && board[bomb].symbol!= '_' && board[bomb].symbol!= '$' && board[bomb].symbol!= 'o') {
                 board[bomb].symbol= '!';
             }
-        } 
+        } */
 }
 
 void randomFlyingWalls(Box *board, size_t xSide, size_t ySide, int difficulty) { //posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
@@ -401,10 +429,11 @@ int createLabirint(Box* board, int * end, size_t xSide, size_t ySide, int diffic
     //printf("Sono tornato dalla randomFlyingWalls\n");
     randomWalls(&board[0], xSide, ySide, difficulty); //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
     //printf("Sono tornato dalla randomWalls\n");
-    randomCoins(&board[0], xSide, ySide, difficulty); //posiziona un numero casuale di monete in posizioni casuali
+    randomCoins(&board[0], xSide, ySide); //posiziona un numero casuale di monete in posizioni casuali
     //printf("Sono tornato dalla randomCoins\n");
-    randomBombs(&board[0], xSide, ySide, difficulty); //posiziona un numero casuale di imprevisti in posizioni casuali
+    randomBombs(&board[0], xSide, ySide); //posiziona un numero casuale di imprevisti in posizioni casuali
     //printf("Sono tornato dalla randomBombs\n");
+    randomDrill(&board[0], xSide, ySide);
     return start;
 
 }
@@ -1255,8 +1284,8 @@ int main(int argc, char *argv[]){
     srand(time(NULL)); //funzione che determina il seme per la randomizzazione
     int score=1000;
     int level;
-    size_t xSide = 15;
-    size_t ySide = 10;
+    size_t xSide;
+    size_t ySide;
     printf("PRIMA DI COMINCIARE SCEGLI LE DIMENSIONI DEL LABIRINTO:\n");
     scanf(" %ld", &xSide);
     scanf(" %ld", &ySide);
@@ -1265,7 +1294,8 @@ int main(int argc, char *argv[]){
     unsigned short difficulty;//indice di difficoltà
     scanf(" %hd", &difficulty);
     char* moves = (char*) malloc(300*sizeof(char)); //il vettore nel quale salverò la sequenza di mosse
-    Box board[xSide*ySide];
+    //Box board[xSide*ySide];
+    Box* board = (Box*) malloc(sizeof(xSide*ySide)+1);
     //printf("Step 1\n");
     createBoard(&board[0], xSide, ySide);
     //printf("Step 2\n");
@@ -1306,6 +1336,6 @@ int main(int argc, char *argv[]){
     printf("%s\n", moves);
     free(moves);
     free(end);
-
+    free(board);
     return 0;
 }
