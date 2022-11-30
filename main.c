@@ -1292,16 +1292,14 @@ void challenge(Box *board, int start, int* end, char* movesString, size_t xSide,
 int main(int argc, char *argv[]){
     srand(time(NULL)); //funzione che determina il seme per la randomizzazione
     int score=1000;
-    int level;
-    size_t xSide = 15;
-    size_t ySide = 15;
+    int level, xSide, ySide;
     printf("PRIMA DI COMINCIARE SCEGLI LE DIMENSIONI DEL LABIRINTO:\n");
-    //scanf(" %ld", &xSide);
-    //scanf(" %ld", &ySide);
+    scanf(" %d", &xSide);
+    scanf(" %d", &ySide);
     char choose;
     printf("Scegli la difficolta' di gioco:\n1. EASY\n2. MEDIUM\n3. HARD\n");
     unsigned short difficulty=1;//indice di difficoltà
-    //scanf(" %hd", &difficulty);
+    scanf(" %hd", &difficulty);
     printf("Step 0\n");
     char* moves = (char*) malloc(300*sizeof(char)); //il vettore nel quale salverò la sequenza di mosse
     Box board[xSide*ySide];
