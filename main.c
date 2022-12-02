@@ -39,6 +39,7 @@ struct box {
     short gCost;
     short hCost;
     short numCoins;
+    short numDrills;
     _Bool extracted;
     _Bool visited;
 };
@@ -164,18 +165,18 @@ void printLabirint(Box* board, int score, size_t xSide, size_t ySide){ //stampa 
 
 void createObjects(Box *board, size_t xSide, size_t ySide, short numOfObjects, char typeObject){
 
-    short objects;
+    short position;
     
     for(int i = 0; i < numOfObjects; i++){
-        objects = rand()%(xSide*ySide);
-        if (board[objects].symbol!='#' && board[objects].symbol!='_' && board[objects].symbol!= 'o' && typeObject == '$'){
-            board[objects].symbol= '$';
+        position = rand()%(xSide*ySide);
+        if (board[position].symbol!='#' && board[position].symbol!='_' && board[position].symbol!= 'o' && typeObject == '$'){
+            board[position].symbol= '$';
         }
-        if(board[objects].symbol!= '#' && board[objects].symbol != '_' && board[objects].symbol!= '$' && board[objects].symbol!= 'o' && board[objects].symbol != '!' && typeObject == 'T'){
-            board[objects].symbol = 'T';
+        if(board[position].symbol!= '#' && board[position].symbol != '_' && board[position].symbol!= '$' && board[position].symbol!= 'o' && board[position].symbol != '!' && typeObject == 'T'){
+            board[position].symbol = 'T';
         }
-        if (board[objects].symbol!= '#' && board[objects].symbol!= '_' && board[objects].symbol!= '$' && board[objects].symbol!= 'o' && typeObject == '!') {
-            board[objects].symbol= '!';
+        if (board[position].symbol!= '#' && board[position].symbol!= '_' && board[position].symbol!= '$' && board[position].symbol!= 'o' && typeObject == '!') {
+            board[position].symbol= '!';
         }
     }
     
@@ -195,7 +196,7 @@ void randomCoins(Box* board, size_t xSide, size_t ySide){ //posiziona un numero 
 
 void randomDrill(Box* board,size_t xSide, size_t ySide){
     char typeObject = 'T';
-    short numOfDrill = (rand()%(xSide/2))+5;
+    short numOfDrill = (rand()%xSide)+5;
     createObjects(board, xSide, ySide, numOfDrill, typeObject); 
     /*for(int i = 0; i < numOfDrill; i++){
         int drill = rand() % (xSide*ySide);
@@ -221,14 +222,16 @@ void randomFlyingWalls(Box *board, size_t xSide, size_t ySide, int difficulty) {
 
     int numOfWalls;
     int d; // determina il numero massimo di ripetizioni, serve per non entrare in loop nel caso in cui non ci siano più spazi liberi in cui inserire muri
-    int k = (rand() % ((xSide/2))) +1; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
+    int k = (rand() % xSide) +3; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
     int base;
     if(difficulty == 1){
-        numOfWalls = (rand()%((xSide/2)));
-    }else if(difficulty == 2){
-        numOfWalls = (rand()%xSide); //determina randomicamente il numero di muri
-    }else if(difficulty == 3){
-        numOfWalls = (rand()%((xSide*2)))+5;
+        numOfWalls = (rand()%xSide)+2;
+    }
+    else if(difficulty == 2){
+        numOfWalls = (rand()%(xSide*2))+3; //determina randomicamente il numero di muri
+    }
+    else{
+        numOfWalls = (rand()%(xSide*4))+5;
     }
     //printf("il numero di muri volanti e' %d\n", numOfWalls);
     for (int i = 0; i < numOfWalls; i++) {
@@ -294,16 +297,18 @@ void randomFlyingWalls(Box *board, size_t xSide, size_t ySide, int difficulty) {
 void randomWalls(Box *board, size_t xSide, size_t ySide, int difficulty){ //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
     int numOfWalls;
     if(difficulty == 1){
-        numOfWalls = (rand()%((xSide/2)));
-    }else if(difficulty == 2){
-        numOfWalls = (rand()%(xSide));//determina il numero di muri
-    }else if(difficulty == 3){
-        numOfWalls = (rand()%(xSide*2));
+        numOfWalls = (rand()%((xSide)));
+    }
+    else if(difficulty == 2){
+        numOfWalls = (rand()%(xSide*2));//determina il numero di muri
+    }
+    else{
+        numOfWalls = (rand()%(xSide*4));
     }
 
     //printf("il numero di muri e' %d\n", numOfWalls);
     int d;
-    int k=(rand()%((xSide/3)*2))+2; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
+    int k=(rand()%xSide)+3; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSide/3 *2 +1)
     int base;
     for (int i=0; i< numOfWalls; i++) {
         d = xSide*ySide*xSide; // determina il numero massimo di ripetizioni, serve per non entrare in loop nel caso in cui non ci siano più spazi liberi in cui inserire muri
@@ -928,6 +933,7 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
     board[start].numCoins = 0;
     board[start].extracted = 1;
     board[start].visited = 1;
+    board[start].numDrills = 0;
 
     Box candidates[xSide*ySide];
     candidates[0]=board[start];
@@ -951,8 +957,12 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         if (board[start + xSide].symbol == '$'){
             board[start + xSide].numCoins = board[start].numCoins +1;
         }
+        else if (board[start+xSide].symbol == 'T'){
+            board[start + xSide].numDrills += 3;
+        }
         else {
             board[start + xSide].numCoins = board[start].numCoins;
+            board[start + xSide].numDrills = board[start].numDrills;
         }
         candidates[size] = board[start + xSide];
         size++;
@@ -969,8 +979,12 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         if (board[start - xSide].symbol == '$'){
             board[start - xSide].numCoins = board[start].numCoins +1;
         }
+        else if (board[start - xSide].symbol == 'T'){
+            board[start - xSide].numDrills += 3;
+        }
         else {
             board[start - xSide].numCoins = board[start].numCoins;
+            board[start - xSide].numDrills = board[start].numDrills;
         }
         candidates[size] = board[start - xSide];
         size++;
@@ -988,8 +1002,12 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         if (board[start +1].symbol == '$'){
             board[start + 1].numCoins = board[start].numCoins +1;
         }
+        else if (board[start + 1].symbol == 'T'){
+            board[start + 1].numDrills += 3;
+        }
         else {
             board[start + 1].numCoins = board[start].numCoins;
+            board[start + 1].numDrills = board[start].numDrills;
         }
         candidates[size] = board[start + 1];
         size++;
@@ -1004,11 +1022,15 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         board[start - 1].predecessor = start;
         board[start - 1].reference = start - 1;
         board[start - 1].visited = 1;
-        if (board[start -1].symbol == '$'){
+        if (board[start - 1].symbol == '$'){
             board[start - 1].numCoins = board[start].numCoins +1;
+        }
+        else if (board[start - 1].symbol == 'T'){
+            board[start - 1].numDrills += 3;
         }
         else {
             board[start - 1].numCoins = board[start].numCoins;
+            board[start - 1].numDrills = board[start].numDrills;
         }
         candidates[size] = board[start - 1];
         size++;
@@ -1036,7 +1058,7 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
 
         //printf("\n\n");
         candidates[i].extracted=1;
-        int t = candidates[i].reference;
+        int t = candidates[i].reference; // t rappresenta la posizione nel labirinto della casella estratta tra i candidati
         board[t].predecessor=candidates[i].predecessor;
         board[t].hCost=candidates[i].hCost;
         board[t].gCost=candidates[i].gCost;
@@ -1044,9 +1066,13 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         /*    printf("\n\n!board[t - xSide].visited = %d,\nt>=xSide = %d\nboard[t - xSide].symbol = %c\nboard[t].predecessor != t -xSide = %d\n\n"
                     , !board[t - xSide].visited, t>=xSide,board[t - xSide].symbol, board[t].predecessor != t -xSide);*/
 
-        if (!board[t - xSide].visited && t>=xSide && board[t - xSide].symbol != '#' && board[t - xSide].symbol != 'o' && board[t].predecessor != t -xSide) { //casella alta se essa non è un muro e se non è il predecessore del nodo predecessore
+        if (!board[t - xSide].visited && t - xSide > 0 && (board[t].numDrills > 0 || board[t - xSide].symbol != '#') && board[t - xSide].symbol != 'o' && board[t].predecessor != t -xSide) { //casella alta se essa non è un muro e se non è il predecessore del nodo predecessore
             //printf("Sono entrato nell'if alto\n");
             board[t - xSide].numCoins = board[t].numCoins;
+            board[t - xSide].numDrills = board[t].numDrills;
+            if (board[t - xSide].symbol == '#'){
+                board[t - xSide].numDrills -= 1;
+            }
             board[t - xSide].gCost = 1 + board[t].gCost;
             xDist = abs(((t - xSide) % xSide) - *end % xSide);
             yDist = abs(((t - xSide) / xSide) - *end / xSide);
@@ -1056,6 +1082,9 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
             }
             else if (board[t - xSide].symbol == '!'){
                 board[t - xSide].numCoins = (board[t].numCoins)/2;
+            }
+            else if (board[t - xSide].symbol == 'T'){
+                board[t - xSide].numDrills += 3;
             }
             else {
                 board[t - xSide].numCoins = board[t].numCoins;
@@ -1080,9 +1109,13 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         //  printf("\n\n!board[t +1 ].visited = %d,\nboard[t+1].symbol = %c\nboard[t].predecessor != t + 1 = %d\n\n"
         //        , !board[t +1].visited, board[t +1].symbol, board[t].predecessor != t +1);
 
-        if (!board[t + 1].visited && board[t + 1].symbol != '#' && board[t + 1].symbol != 'o' && board[t].predecessor != t +1) { //casella a destra se essa non è un muro e se non è il predecessore del nodo predecessore
+        if (!board[t + 1].visited && (t + 1)%xSide != 0 && (board[t].numDrills > 0 || board[t + 1].symbol != '#') && board[t + 1].symbol != 'o' && board[t].predecessor != t +1) { //casella a destra se essa non è un muro e se non è il predecessore del nodo predecessore
             //     printf("Sono entrato nell'if destro\n");
             board[t + 1].numCoins = board[t].numCoins;
+            board[t + 1].numDrills = board[t].numDrills;
+            if (board[t + 1].symbol == '#'){
+                board[t + 1].numDrills -= 1;
+            }
             board[t + 1].gCost = 1 + board[t].gCost;
             xDist = abs(((t + 1) % xSide) - *end % xSide);
             yDist = abs(((t + 1) / xSide) - *end / xSide);
@@ -1092,6 +1125,9 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
             }
             else if (board[t + 1].symbol == '!'){
                 board[t + 1].numCoins = (board[t].numCoins)/2;
+            }
+            else if (board[t + 1].symbol == 'T'){
+                board[t + 1].numDrills += 3;
             }
             else {
                 board[t + 1].numCoins = board[t].numCoins;
@@ -1118,9 +1154,13 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         //  printf("\n\n!board[t + xSide].visited = %d,\nt<xSide*ySide-xSide = %d\nboard[t + xSide].symbol = %c\nboard[t].predecessor != t +xSide = %d\n\n"
         //          , !board[t + xSide].visited, t<xSide*ySide-xSide,board[t + xSide].symbol, board[t].predecessor != t +xSide);
 
-        if (!board[t + xSide].visited && t<xSide*ySide-xSide && board[t + xSide].symbol != 'o' && board[t + xSide].symbol != '#' && board[t].predecessor != t +xSide) { //casella bassa se essa non è un muro e se non è il predecessore del nodo predecessore
+        if (!board[t + xSide].visited && t<xSide*ySide && (board[t].numDrills > 0 || board[t + xSide].symbol != '#') && board[t + xSide].symbol != 'o' && board[t].predecessor != t +xSide) { //casella bassa se essa non è un muro e se non è il predecessore del nodo predecessore
             //     printf("Sono entrato nell'if basso\n");
             board[t + xSide].numCoins = board[t].numCoins;
+            board[t + xSide].numDrills = board[t].numDrills;
+            if (board[t + xSide].symbol == '#'){
+                board[t + xSide].numDrills -= 1;
+            }
             board[t + xSide].gCost = 1 + board[t].gCost;
             xDist = abs(((t + xSide) % xSide) - *end % xSide);
             yDist = abs(((t + xSide) / xSide) - *end / xSide);
@@ -1130,6 +1170,9 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
             }
             else if (board[t + xSide].symbol == '!'){
                 board[t + xSide].numCoins = (board[t].numCoins)/2;
+            }
+            else if (board[t + xSide].symbol == 'T'){
+                board[t + xSide].numDrills += 3;
             }
             else {
                 board[t + xSide].numCoins = board[t].numCoins;
@@ -1154,9 +1197,13 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         //   printf("\n\n!board[t -1 ].visited = %d,\nboard[t-1].symbol = %c\nboard[t].predecessor != t -1 = %d\n\n"
         //         , !board[t -1].visited, board[t -1].symbol, board[t].predecessor != t -1);
 
-        if (!board[t - 1].visited && board[t - 1].symbol != '#' && board[t - 1].symbol != 'o' && board[t].predecessor != t -1) { //casella a sinistra se essa non è un muro e se non è il predecessore del nodo predecessore
+        if (!board[t - 1].visited && (t - 1)%xSide != (xSide-1) && (board[t].numDrills > 0 || board[t - 1].symbol != '#') && board[t - 1].symbol != 'o' && board[t].predecessor != t -1) { //casella a sinistra se essa non è un muro e se non è il predecessore del nodo predecessore
             //      printf("Sono entrato nell'if sinistro\n");
             board[t - 1].numCoins = board[t].numCoins;
+            board[t - 1].numDrills = board[t].numDrills;
+            if (board[t - 1].symbol == '#'){
+                board[t - 1].numDrills -= 1;
+            }
             board[t - 1].gCost = 1 + board[t].gCost;
             xDist = abs(((t - 1) % xSide) - *end % xSide);
             yDist = abs(((t - 1) / xSide) - *end / xSide);
@@ -1166,6 +1213,9 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
             }
             else if (board[t - 1].symbol == '!'){
                 board[t - 1].numCoins = (board[t].numCoins)/2;
+            }
+            else if (board[t - 1].symbol == 'T'){
+                board[t - 1].numDrills += 3;
             }
             else {
                 board[t - 1].numCoins = board[t].numCoins;
@@ -1198,6 +1248,7 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         predecessors[j]=k;
         //printf("   predecessors[%d] =%d\n", j, predecessors[j]);
         k=board[k].predecessor;
+        printf("board[%d].numDrills = %d\n", k, board[k].numDrills);
         //printf("   board[k].predecessor dopo =%d\n\n", board[k].predecessor);
         j++;
     }
@@ -1220,7 +1271,7 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
         printf("%d ", path[p]);
     }*/
 
-    //printLabirint(board,score);
+    printLabirint(board,score, xSide, ySide);
     //printf("\n");
 
     for (int h = 0; h<j; h++ ){
@@ -1244,7 +1295,7 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
     movesString[k]='\0';
     score = 1000-j+(board[*end].numCoins)*10;
     free(predecessors);
-    //printLabirint(board, score);
+    printLabirint(board, score, xSide, ySide);
     //printf("Numero di monete al termine della partita: %d\n", board[*end].numCoins);
     //printf("Numero di mosse della partita: %d\n", j);
 }
@@ -1314,9 +1365,9 @@ int main(int argc, char *argv[]){
         printf("%s\n", moves);
         exit(0);
     }
-    //printf("Step 3\n");
+    printf("Step 3\n");
     char mode = welcome();
-    //printf("Step 4\n");
+
     _Bool wrongChar = 1;
     while (wrongChar){
         scanf(" %c", &choose);
@@ -1334,6 +1385,7 @@ int main(int argc, char *argv[]){
 
         else if(choose == 'c' || choose == 'C'){
             aStarAlgorithm(board, start, end, moves, xSide, ySide);
+            printf("Step 4\n");
             wrongChar=0;
         }
 
@@ -1342,8 +1394,10 @@ int main(int argc, char *argv[]){
         }
     }
     printf("%s\n", moves);
-    free(moves);
+    //free(moves);
+    printf("Step 5\n");
     free(end);
+    printf("Step 6\n");
     //free(board);
     return 0;
 }
