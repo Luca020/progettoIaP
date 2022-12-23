@@ -1,0 +1,3 @@
+C:/Users/ilmio/Desktop/Snake/cmake-build-debug/CMakeFiles/Snake_2.dir
+C:/Users/ilmio/Desktop/Snake/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ilmio/Desktop/Snake/cmake-build-debug/CMakeFiles/rebuild_cache.dir
