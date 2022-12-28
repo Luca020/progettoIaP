@@ -4,6 +4,6 @@
 CMakeFiles/progettoiap.dir/dvector.c.obj: \
  ../dvector.c \
  ../dvector.h
-CMakeFiles/progettoiap.dir/snakeepico.c.obj: \
+CMakeFiles/progettoiap.dir/main.c.obj: \
  ../dvector.h \
- ../snakeepico.c
+ ../main.c

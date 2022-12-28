@@ -9,7 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "C:/Users/ilmio/Desktop/progettoiap/dvector.c" "C:/Users/ilmio/Desktop/progettoiap/cmake-build-debug/CMakeFiles/progettoiap.dir/dvector.c.obj"
-  "C:/Users/ilmio/Desktop/progettoiap/snakeepico.c" "C:/Users/ilmio/Desktop/progettoiap/cmake-build-debug/CMakeFiles/progettoiap.dir/snakeepico.c.obj"
+  "C:/Users/ilmio/Desktop/progettoiap/main.c" "C:/Users/ilmio/Desktop/progettoiap/cmake-build-debug/CMakeFiles/progettoiap.dir/main.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

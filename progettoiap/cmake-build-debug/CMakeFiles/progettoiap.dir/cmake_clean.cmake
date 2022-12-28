@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/progettoiap.dir/dvector.c.obj"
-  "CMakeFiles/progettoiap.dir/snakeepico.c.obj"
+  "CMakeFiles/progettoiap.dir/main.c.obj"
   "libprogettoiap.dll.a"
   "progettoiap.exe"
   "progettoiap.exe.manifest"

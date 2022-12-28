@@ -79,30 +79,30 @@ CMakeFiles/progettoiap.dir/dvector.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/progettoiap.dir/dvector.c.s"
 	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\progettoiap\dvector.c -o CMakeFiles\progettoiap.dir\dvector.c.s
 
-CMakeFiles/progettoiap.dir/snakeepico.c.obj: CMakeFiles/progettoiap.dir/flags.make
-CMakeFiles/progettoiap.dir/snakeepico.c.obj: CMakeFiles/progettoiap.dir/includes_C.rsp
-CMakeFiles/progettoiap.dir/snakeepico.c.obj: ../snakeepico.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/progettoiap.dir/snakeepico.c.obj"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\progettoiap.dir\snakeepico.c.obj -c C:\Users\ilmio\Desktop\progettoiap\snakeepico.c
+CMakeFiles/progettoiap.dir/main.c.obj: CMakeFiles/progettoiap.dir/flags.make
+CMakeFiles/progettoiap.dir/main.c.obj: CMakeFiles/progettoiap.dir/includes_C.rsp
+CMakeFiles/progettoiap.dir/main.c.obj: ../main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/progettoiap.dir/main.c.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\progettoiap.dir\main.c.obj -c C:\Users\ilmio\Desktop\progettoiap\main.c
 
-CMakeFiles/progettoiap.dir/snakeepico.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/progettoiap.dir/snakeepico.c.i"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\ilmio\Desktop\progettoiap\snakeepico.c > CMakeFiles\progettoiap.dir\snakeepico.c.i
+CMakeFiles/progettoiap.dir/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/progettoiap.dir/main.c.i"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\ilmio\Desktop\progettoiap\main.c > CMakeFiles\progettoiap.dir\main.c.i
 
-CMakeFiles/progettoiap.dir/snakeepico.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/progettoiap.dir/snakeepico.c.s"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\progettoiap\snakeepico.c -o CMakeFiles\progettoiap.dir\snakeepico.c.s
+CMakeFiles/progettoiap.dir/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/progettoiap.dir/main.c.s"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\progettoiap\main.c -o CMakeFiles\progettoiap.dir\main.c.s
 
 # Object files for target progettoiap
 progettoiap_OBJECTS = \
 "CMakeFiles/progettoiap.dir/dvector.c.obj" \
-"CMakeFiles/progettoiap.dir/snakeepico.c.obj"
+"CMakeFiles/progettoiap.dir/main.c.obj"
 
 # External object files for target progettoiap
 progettoiap_EXTERNAL_OBJECTS =
 
 progettoiap.exe: CMakeFiles/progettoiap.dir/dvector.c.obj
-progettoiap.exe: CMakeFiles/progettoiap.dir/snakeepico.c.obj
+progettoiap.exe: CMakeFiles/progettoiap.dir/main.c.obj
 progettoiap.exe: CMakeFiles/progettoiap.dir/build.make
 progettoiap.exe: CMakeFiles/progettoiap.dir/linklibs.rsp
 progettoiap.exe: CMakeFiles/progettoiap.dir/objects1.rsp

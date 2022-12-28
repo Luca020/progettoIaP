@@ -8,4 +8,4 @@ include_directories(.)
 add_executable(progettoiap
         dvector.c
         dvector.h
-        snakeepico.c)
+        main.c)

@@ -82,7 +82,7 @@
 		<Unit filename="C:/Users/ilmio/Desktop/progettoiap/dvector.h">
 			<Option target="progettoiap"/>
 		</Unit>
-		<Unit filename="C:/Users/ilmio/Desktop/progettoiap/snakeepico.c">
+		<Unit filename="C:/Users/ilmio/Desktop/progettoiap/main.c">
 			<Option target="progettoiap"/>
 		</Unit>
 		<Unit filename="C:/Users/ilmio/Desktop/progettoiap/CMakeLists.txt">

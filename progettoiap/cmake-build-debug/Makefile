@@ -152,29 +152,29 @@ dvector.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/dvector.c.s
 .PHONY : dvector.c.s
 
-snakeepico.obj: snakeepico.c.obj
-.PHONY : snakeepico.obj
+main.obj: main.c.obj
+.PHONY : main.obj
 
 # target to build an object file
-snakeepico.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/snakeepico.c.obj
-.PHONY : snakeepico.c.obj
+main.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/main.c.obj
+.PHONY : main.c.obj
 
-snakeepico.i: snakeepico.c.i
-.PHONY : snakeepico.i
+main.i: main.c.i
+.PHONY : main.i
 
 # target to preprocess a source file
-snakeepico.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/snakeepico.c.i
-.PHONY : snakeepico.c.i
+main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/main.c.i
+.PHONY : main.c.i
 
-snakeepico.s: snakeepico.c.s
-.PHONY : snakeepico.s
+main.s: main.c.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-snakeepico.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/snakeepico.c.s
-.PHONY : snakeepico.c.s
+main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\progettoiap.dir\build.make CMakeFiles/progettoiap.dir/main.c.s
+.PHONY : main.c.s
 
 # Help Target
 help:
@@ -188,9 +188,9 @@ help:
 	@echo ... dvector.obj
 	@echo ... dvector.i
 	@echo ... dvector.s
-	@echo ... snakeepico.obj
-	@echo ... snakeepico.i
-	@echo ... snakeepico.s
+	@echo ... main.obj
+	@echo ... main.i
+	@echo ... main.s
 .PHONY : help
 
 
