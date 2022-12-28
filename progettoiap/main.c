@@ -1,25 +1,12 @@
 //892607 891480
 
-
-//cose da fare:
-//creare un funzione per ogni direzione di sviluppo dei muri, in modo da non ripetere il codice
-//trasformare int in unsigned int quando necessario
-//utilizzare gli short quando necessario
-//debugging e testing
-//dividere in librerie
-//implementare livelli
-//documentazione
-//cambiare dimensioni array con size_t come tipo
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <windows.h>
+//#include <windows.h>
 #include "dvector.h"
-#define INTENSITY_RESET 0
-
+//#define INTENSITY_RESET 0
 
 struct box {
     char symbol;
@@ -34,13 +21,10 @@ struct box {
 };
 typedef struct box Box;
 
-size_t xSize = 15;
-size_t ySize = 20;
 
 void createBoard(Box* board, size_t xSize, size_t ySize){ //crea il campo di gioco con pareti e spazi vuoti
     for(int i = 0; i < (xSize*ySize); i++){
-        //board[i].visited=0;
-        if ((i>=0 && i<(xSize)) || (i>=((xSize*ySize)-xSize) && i<(xSize*ySize)) || i%xSize==0 || i%xSize==(xSize-1)){
+        if ((i>=0 && i<(xSize)) || (i>=((xSize*ySize)-xSize) && i<(xSize*ySize)) || i%xSize==0 || i%xSize==(xSize-1)){ 
             board[i].symbol='#';
         }
         else {
@@ -77,7 +61,7 @@ void randomEnd(int start, int* end, size_t xSize, size_t ySize){ // genera un en
         *end = (rand()%(xSize-2) + 1 + ((xSize*ySize)-xSize));
     }
     else if (start>((xSize*ySize)-xSize)){ //se lo start è posizionato sulla parete inferiore
-        *end=((rand()%(xSize-2))+1); //sceglie randomicamente un numero tra 1 e (xSize-2)
+        *end=((rand()%(xSize-2))+1);
     }
     else if (start%xSize==0){ //se lo start è posizionato sulla parete sinistra
         *end = (((rand()%(ySize-2))*xSize)+xSize+xSize-1);
@@ -87,12 +71,10 @@ void randomEnd(int start, int* end, size_t xSize, size_t ySize){ // genera un en
     }
 }
 
-
 void printLabirint(Box* board, int *score, size_t xSize, size_t ySize){ //stampa il labirinto
-    //printf("Sono entrato nella printLabirint\n");
     for(int i = 0; i < ySize; i++){
-        for(int j = 0; j < xSize; j++){
-           /* if (board[i*xSize+j].symbol=='#'){
+        for(int j = 0; j < xSize; j++){/*
+           if (board[i*xSize+j].symbol=='#'){
                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_GREEN);
                 printf("  ");
                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), INTENSITY_RESET);
@@ -123,109 +105,100 @@ void printLabirint(Box* board, int *score, size_t xSize, size_t ySize){ //stampa
     printf("\n");
 }
 
-void createObjects(Box *board, size_t xSize, size_t ySize, short numOfObjects, char typeObject){
-
-    short position;
-
+void createObjects(Box *board, size_t xSize, size_t ySize, short numOfObjects, char objectType){ // crea gli oggetti all'interno del labirinto
+    int counter = xSize*ySize; //fissa un limite di iterazioni del ciclo, per evitare il loop quando non c'è più spazio per posizionare oggetti
+    short position = rand()%(xSize*ySize); //trova una posizione casuale all'interno del labirinto in cui posizionare l'oggetto
     for(int i = 0; i < numOfObjects; i++){
-        position = rand()%(xSize*ySize);
-        if (board[position].symbol!='#' && board[position].symbol!='_' && board[position].symbol!= 'o' && typeObject == '$'){
-            board[position].symbol= '$';
+        while (board[position].symbol!=' ' && counter>0){ //finché non trova una posizione che sia libera
+            position = rand()%(xSize*ySize); //continua a cercare una posizione
+            counter--;
         }
-        if(board[position].symbol!= '#' && board[position].symbol != '_' && board[position].symbol!= '$' && board[position].symbol!= 'o' && board[position].symbol != '!' && typeObject == 'T'){
-            board[position].symbol = 'T';
-        }
-        if (board[position].symbol!= '#' && board[position].symbol!= '_' && board[position].symbol!= '$' && board[position].symbol!= 'o' && typeObject == '!') {
-            board[position].symbol= '!';
-        }
+        if (board[position].symbol == ' ')
+            board[position].symbol= objectType;
     }
 
 }
 
 void randomCoins(Box* board, size_t xSize, size_t ySize){ //posiziona un numero casuale di monete in posizioni casuali
-    char typeObject = '$';
-    short numOfCoins = (rand()%(xSize*3))+5; //determina il numero di monete. Minimo 10, massimo (xSize+9)
-    createObjects(board, xSize, ySize, numOfCoins, typeObject);
+    char objectType = '$';
+    short numOfCoins = rand()%(xSize*2); //determina il numero di monete
+    createObjects(board, xSize, ySize, numOfCoins, objectType);
 }
 
-void randomDrill(Box* board,size_t xSize, size_t ySize){
-    char typeObject = 'T';
-    short numOfDrill = (rand()%xSize)+5;
-    createObjects(board, xSize, ySize, numOfDrill, typeObject);
+void randomDrill(Box* board,size_t xSize, size_t ySize){ //posiziona un numero casuale di trapani in posizioni casuali
+    char objectType = 'T';
+    short numOfDrill = rand()%xSize; //determina il numero di trapani
+    createObjects(board, xSize, ySize, numOfDrill, objectType);
 }
 
 void randomBombs(Box* board, size_t xSize, size_t ySize) { //posiziona un numero casuale di imprevisti (!) in posizioni casuali
-    char typeObject = '!';
-    short numOfBombs = (rand()%xSize)+5; //determina il numero di imprevisti. Minimo 5, massimo (xSize+4)
-    createObjects(board, xSize, ySize, numOfBombs, typeObject);
+    char objectType = '!';
+    short numOfBombs = rand()%xSize; //determina il numero di imprevisti
+    createObjects(board, xSize, ySize, numOfBombs, objectType);
 }
 
 void randomFlyingWalls(Box *board, size_t xSize, size_t ySize, int difficulty) { //posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
-
     int numOfWalls;
-    int d; // determina il numero massimo di ripetizioni, serve per non entrare in loop nel caso in cui non ci siano più spazi liberi in cui inserire muri
-    int k = (rand() % xSize) +3; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSize/3 *2 +1)
-    int base;
+    int baseOfWall;
     if(difficulty == 1){
-        numOfWalls = (rand()%xSize)+2;
+        numOfWalls = (rand()%(xSize/4))+2; //determina randomicamente il numero di muri
     }
     else if(difficulty == 2){
-        numOfWalls = (rand()%(xSize*2))+3; //determina randomicamente il numero di muri
+        numOfWalls = (rand()%(xSize/2))+4;
     }
     else{
-        numOfWalls = (rand()%(xSize*4))+5;
+        numOfWalls = (rand()%xSize)+10;
     }
-    //printf("il numero di muri volanti e' %d\n", numOfWalls);
     for (int i = 0; i < numOfWalls; i++) {
-        d = xSize*ySize*xSize;
+        int wallLength = (rand() % xSize) +4; //determina randomicamente la lunghezza del muro
+        int counter = xSize*ySize*xSize; //fissa un limite di iterazioni del ciclo, per evitare il loop quando non c'è più spazio per posizionare muri
         do {
-            base = rand() % (xSize * ySize);
-            d--;
-        } while ((board[base].symbol!=' ' || board[base+1].symbol=='#' || board[base-1].symbol=='#' || board[base+xSize].symbol=='#' || board[base-xSize].symbol=='#'
-                  || board[base+xSize+1].symbol=='#' || board[base+xSize-1].symbol=='#' || board[base-xSize+1].symbol=='#' || board[base-xSize-1].symbol=='#') && d>0);
-        //se la casella scelta non è uno spazio o se confina con un muro o una parete
-        if (d>0){
-            board[base].symbol='#';
-            short direction = rand()%4;
+            baseOfWall= rand() % (xSize * ySize); //cerca un posto libero in cui costruire il muro
+            counter--;
+        } while ((board[baseOfWall].symbol!=' ' || board[baseOfWall+1].symbol=='#' || board[baseOfWall-1].symbol=='#' || board[baseOfWall+xSize].symbol=='#' || board[baseOfWall-xSize].symbol=='#'
+                  || board[baseOfWall+xSize+1].symbol=='#' || board[baseOfWall+xSize-1].symbol=='#' || board[baseOfWall-xSize+1].symbol=='#' || board[baseOfWall-xSize-1].symbol=='#') && counter>0);
+        if (counter>0){
+            board[baseOfWall].symbol='#';
+            short direction = rand()%4; //determina randomicamente in quale direzione si svilupperà il muro
             switch(direction){
                 case 0: //basso
-                    while (board[base+xSize-1].symbol!='#' && board[base+xSize].symbol!='#' && board[base+xSize+1].symbol!='#' && board[base+xSize+xSize-1].symbol!='#' && board[base+xSize+xSize].symbol!='#' && board[base+xSize+xSize+1].symbol!='#' &&
-                           board[base+xSize-1].symbol!='_' && board[base+xSize].symbol!='_' && board[base+xSize+1].symbol!='_' && board[base+xSize+xSize-1].symbol!='_' && board[base+xSize+xSize].symbol!='_' && board[base+xSize+xSize+1].symbol!='_' &&
-                           board[base+xSize-1].symbol!='o' && board[base+xSize].symbol!='o' && board[base+xSize+1].symbol!='o' && board[base+xSize+xSize-1].symbol!='o' && board[base+xSize+xSize].symbol!='o' && board[base+xSize+xSize+1].symbol!='o' && k>0){
+                    while (board[baseOfWall+xSize-1].symbol!='#' && board[baseOfWall+xSize].symbol!='#' && board[baseOfWall+xSize+1].symbol!='#' && board[baseOfWall+xSize+xSize-1].symbol!='#' && board[baseOfWall+xSize+xSize].symbol!='#' && board[baseOfWall+xSize+xSize+1].symbol!='#' &&
+                           board[baseOfWall+xSize-1].symbol!='_' && board[baseOfWall+xSize].symbol!='_' && board[baseOfWall+xSize+1].symbol!='_' && board[baseOfWall+xSize+xSize-1].symbol!='_' && board[baseOfWall+xSize+xSize].symbol!='_' && board[baseOfWall+xSize+xSize+1].symbol!='_' &&
+                           board[baseOfWall+xSize-1].symbol!='o' && board[baseOfWall+xSize].symbol!='o' && board[baseOfWall+xSize+1].symbol!='o' && board[baseOfWall+xSize+xSize-1].symbol!='o' && board[baseOfWall+xSize+xSize].symbol!='o' && board[baseOfWall+xSize+xSize+1].symbol!='o' && wallLength>0){
                         //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
-                        board[base+xSize].symbol='#';
-                        base += xSize;
-                        k--;
+                        board[baseOfWall+xSize].symbol='#';
+                        baseOfWall+= xSize;
+                        wallLength--;
                     }
                     break;
                 case 1: //alto
-                    while (board[base-xSize-1].symbol!='#' && board[base-xSize].symbol!='#' && board[base-xSize+1].symbol!='#' && board[base-xSize-xSize-1].symbol!='#' && board[base-xSize-xSize].symbol!='#' && board[base-xSize-xSize+1].symbol!='#' &&
-                           board[base-xSize-1].symbol!='_' && board[base-xSize].symbol!='_' && board[base-xSize+1].symbol!='_' && board[base-xSize-xSize-1].symbol!='_' && board[base-xSize-xSize].symbol!='_' && board[base-xSize-xSize+1].symbol!='_' &&
-                           board[base-xSize-1].symbol!='o' && board[base-xSize].symbol!='o' && board[base-xSize+1].symbol!='o' && board[base-xSize-xSize-1].symbol!='o' && board[base-xSize-xSize].symbol!='o' && board[base-xSize-xSize+1].symbol!='o' && k>0){
+                    while (board[baseOfWall-xSize-1].symbol!='#' && board[baseOfWall-xSize].symbol!='#' && board[baseOfWall-xSize+1].symbol!='#' && board[baseOfWall-xSize-xSize-1].symbol!='#' && board[baseOfWall-xSize-xSize].symbol!='#' && board[baseOfWall-xSize-xSize+1].symbol!='#' &&
+                           board[baseOfWall-xSize-1].symbol!='_' && board[baseOfWall-xSize].symbol!='_' && board[baseOfWall-xSize+1].symbol!='_' && board[baseOfWall-xSize-xSize-1].symbol!='_' && board[baseOfWall-xSize-xSize].symbol!='_' && board[baseOfWall-xSize-xSize+1].symbol!='_' &&
+                           board[baseOfWall-xSize-1].symbol!='o' && board[baseOfWall-xSize].symbol!='o' && board[baseOfWall-xSize+1].symbol!='o' && board[baseOfWall-xSize-xSize-1].symbol!='o' && board[baseOfWall-xSize-xSize].symbol!='o' && board[baseOfWall-xSize-xSize+1].symbol!='o' && wallLength>0){
                         //finché nelle 6 caselle poste sopra la casella scelta non ci sono muri o end o start
-                        board[base-xSize].symbol='#';
-                        base -= xSize;
-                        k--;
+                        board[baseOfWall-xSize].symbol='#';
+                        baseOfWall-= xSize;
+                        wallLength--;
                     }
                     break;
                 case 2: //destra
-                    while (board[base-xSize+1].symbol!='#' && board[base-xSize+2].symbol!='#' && board[base+1].symbol!='#' && board[base+2].symbol!='#' && board[base+xSize+1].symbol!='#' && board[base+xSize+2].symbol!='#' &&
-                           board[base-xSize+1].symbol!='_' && board[base-xSize+2].symbol!='_' && board[base+1].symbol!='_' && board[base+2].symbol!='_' && board[base+xSize+1].symbol!='_' && board[base+xSize+2].symbol!='_' &&
-                           board[base-xSize+1].symbol!='o' && board[base-xSize+2].symbol!='o' && board[base+1].symbol!='o' && board[base+2].symbol!='o' && board[base+xSize+1].symbol!='o' && board[base+xSize+2].symbol!='o' && k>0){
+                    while (board[baseOfWall-xSize+1].symbol!='#' && board[baseOfWall-xSize+2].symbol!='#' && board[baseOfWall+1].symbol!='#' && board[baseOfWall+2].symbol!='#' && board[baseOfWall+xSize+1].symbol!='#' && board[baseOfWall+xSize+2].symbol!='#' &&
+                           board[baseOfWall-xSize+1].symbol!='_' && board[baseOfWall-xSize+2].symbol!='_' && board[baseOfWall+1].symbol!='_' && board[baseOfWall+2].symbol!='_' && board[baseOfWall+xSize+1].symbol!='_' && board[baseOfWall+xSize+2].symbol!='_' &&
+                           board[baseOfWall-xSize+1].symbol!='o' && board[baseOfWall-xSize+2].symbol!='o' && board[baseOfWall+1].symbol!='o' && board[baseOfWall+2].symbol!='o' && board[baseOfWall+xSize+1].symbol!='o' && board[baseOfWall+xSize+2].symbol!='o' && wallLength>0){
                         //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
-                        board[base+1].symbol='#';
-                        base++;
-                        k--;
+                        board[baseOfWall+1].symbol='#';
+                        baseOfWall++;
+                        wallLength--;
                     }
                     break;
                 case 3: //sinistra
-                    while (board[base-xSize-1].symbol!='#' && board[base-xSize-2].symbol!='#' && board[base-1].symbol!='#' && board[base-2].symbol!='#' && board[base+xSize-1].symbol!='#' && board[base+xSize-2].symbol!='#' &&
-                           board[base-xSize-1].symbol!='_' && board[base-xSize-2].symbol!='_' && board[base-1].symbol!='_' && board[base-2].symbol!='_' && board[base+xSize-1].symbol!='_' && board[base+xSize-2].symbol!='_' &&
-                           board[base-xSize-1].symbol!='o' && board[base-xSize-2].symbol!='o' && board[base-1].symbol!='o' && board[base-2].symbol!='o' && board[base+xSize-1].symbol!='o' && board[base+xSize-2].symbol!='o' && k>0){
+                    while (board[baseOfWall-xSize-1].symbol!='#' && board[baseOfWall-xSize-2].symbol!='#' && board[baseOfWall-1].symbol!='#' && board[baseOfWall-2].symbol!='#' && board[baseOfWall+xSize-1].symbol!='#' && board[baseOfWall+xSize-2].symbol!='#' &&
+                           board[baseOfWall-xSize-1].symbol!='_' && board[baseOfWall-xSize-2].symbol!='_' && board[baseOfWall-1].symbol!='_' && board[baseOfWall-2].symbol!='_' && board[baseOfWall+xSize-1].symbol!='_' && board[baseOfWall+xSize-2].symbol!='_' &&
+                           board[baseOfWall-xSize-1].symbol!='o' && board[baseOfWall-xSize-2].symbol!='o' && board[baseOfWall-1].symbol!='o' && board[baseOfWall-2].symbol!='o' && board[baseOfWall+xSize-1].symbol!='o' && board[baseOfWall+xSize-2].symbol!='o' && wallLength>0){
                         //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
-                        board[base-1].symbol='#';
-                        base--;
-                        k--;
+                        board[baseOfWall-1].symbol='#';
+                        baseOfWall--;
+                        wallLength--;
                     }
                     break;
                 default:
@@ -236,92 +209,89 @@ void randomFlyingWalls(Box *board, size_t xSize, size_t ySize, int difficulty) {
     }
 }
 
-void randomWalls(Box *board, size_t xSize, size_t ySize, int difficulty){ //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
+void randomWalls(Box *board, size_t xSize, size_t ySize, int difficulty){ //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale. Questi muri partono da pareti o da muri già esistenti
     int numOfWalls;
-    if(difficulty == 1){
-        numOfWalls = (rand()%((xSize)));
+    int baseOfWall;
+    if(difficulty == 1){ //determina randomicamente il numero di muri
+        numOfWalls = (rand()%(xSize/2)+2);
     }
     else if(difficulty == 2){
-        numOfWalls = (rand()%(xSize*2));//determina il numero di muri
+        numOfWalls = (rand()%(xSize*2)+10);
     }
     else{
-        numOfWalls = (rand()%(xSize*4));
+        numOfWalls = (rand()%(xSize*4)+30);
     }
-
-    //printf("il numero di muri e' %d\n", numOfWalls);
-    int d;
-    int k=(rand()%xSize)+3; //determina randomicamente la lunghezza del muro, minimo 1, massimo (xSize/3 *2 +1)
-    int base;
     for (int i=0; i< numOfWalls; i++) {
-        d = xSize*ySize*xSize; // determina il numero massimo di ripetizioni, serve per non entrare in loop nel caso in cui non ci siano più spazi liberi in cui inserire muri
+        int wallLength=(rand()%xSize)+7; //determina randomicamente la lunghezza del muro
+        int counter = xSize*ySize*xSize; //fissa un limite di iterazioni del ciclo, per evitare il loop quando non c'è più spazio per posizionare muri
         do {
-            base = rand()%(xSize*ySize);
-            d--;
-        } while ((board[base].symbol!='#' || base==0 ||  base==(xSize-1) || base==((xSize*ySize)-1) || base==((xSize*ySize)-xSize+1)) && d>0); //se la casella scelta e' un angolo o se non contiene '#'
-        if (d>0){
-            if (base<(xSize-1)){ //se la casella scelta fa parte della parete superiore
-                while (board[base+xSize-1].symbol!='#' && board[base+xSize].symbol!='#' && board[base+xSize+1].symbol!='#' && board[base+xSize+xSize-1].symbol!='#' && board[base+xSize+xSize].symbol!='#' && board[base+xSize+xSize+1].symbol!='#' &&
-                       board[base+xSize-1].symbol!='_' && board[base+xSize].symbol!='_' && board[base+xSize+1].symbol!='_' && board[base+xSize+xSize-1].symbol!='_' && board[base+xSize+xSize].symbol!='_' && board[base+xSize+xSize+1].symbol!='_' &&
-                       board[base+xSize-1].symbol!='o' && board[base+xSize].symbol!='o' && board[base+xSize+1].symbol!='o' && board[base+xSize+xSize-1].symbol!='o' && board[base+xSize+xSize].symbol!='o' && board[base+xSize+xSize+1].symbol!='o' && k>0){
+            baseOfWall= rand()%(xSize*ySize); //cerca un posto libero in cui costruire il muro
+            counter--;
+        } while ((board[baseOfWall].symbol!='#' || baseOfWall==0 ||  baseOfWall==(xSize-1) || baseOfWall==((xSize*ySize)-1) || baseOfWall==((xSize*ySize)-xSize+1)) && counter>0); //se la casella scelta e' un angolo o se non contiene '#'
+        if (counter>0){
+            if (baseOfWall<(xSize-1)){ //se la casella scelta fa parte della parete superiore
+                while (board[baseOfWall+xSize-1].symbol!='#' && board[baseOfWall+xSize].symbol!='#' && board[baseOfWall+xSize+1].symbol!='#' && board[baseOfWall+xSize+xSize-1].symbol!='#' && board[baseOfWall+xSize+xSize].symbol!='#' && board[baseOfWall+xSize+xSize+1].symbol!='#' &&
+                       board[baseOfWall+xSize-1].symbol!='_' && board[baseOfWall+xSize].symbol!='_' && board[baseOfWall+xSize+1].symbol!='_' && board[baseOfWall+xSize+xSize-1].symbol!='_' && board[baseOfWall+xSize+xSize].symbol!='_' && board[baseOfWall+xSize+xSize+1].symbol!='_' &&
+                       board[baseOfWall+xSize-1].symbol!='o' && board[baseOfWall+xSize].symbol!='o' && board[baseOfWall+xSize+1].symbol!='o' && board[baseOfWall+xSize+xSize-1].symbol!='o' && board[baseOfWall+xSize+xSize].symbol!='o' && board[baseOfWall+xSize+xSize+1].symbol!='o' && wallLength>0){
                     //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
-                    board[base+xSize].symbol='#';
-                    base += xSize;
-                    k--;
+                    board[baseOfWall+xSize].symbol='#';
+                    baseOfWall+= xSize;
+                    wallLength--;
                 }
             }
-            else if (base>((xSize*ySize)-xSize+1) && base<((xSize*ySize)-1)){ //se la casella scelta fa parte della parete inferiore
-                while (board[base-xSize-1].symbol!='#' && board[base-xSize].symbol!='#' && board[base-xSize+1].symbol!='#' && board[base-xSize-xSize-1].symbol!='#' && board[base-xSize-xSize].symbol!='#' && board[base-xSize-xSize+1].symbol!='#' &&
-                       board[base-xSize-1].symbol!='_' && board[base-xSize].symbol!='_' && board[base-xSize+1].symbol!='_' && board[base-xSize-xSize-1].symbol!='_' && board[base-xSize-xSize].symbol!='_' && board[base-xSize-xSize+1].symbol!='_' &&
-                       board[base-xSize-1].symbol!='o' && board[base-xSize].symbol!='o' && board[base-xSize+1].symbol!='o' && board[base-xSize-xSize-1].symbol!='o' && board[base-xSize-xSize].symbol!='o' && board[base-xSize-xSize+1].symbol!='o' && k>0){
+            else if (baseOfWall>((xSize*ySize)-xSize+1) && baseOfWall<((xSize*ySize)-1)){ //se la casella scelta fa parte della parete inferiore
+                while (board[baseOfWall-xSize-1].symbol!='#' && board[baseOfWall-xSize].symbol!='#' && board[baseOfWall-xSize+1].symbol!='#' && board[baseOfWall-xSize-xSize-1].symbol!='#' && board[baseOfWall-xSize-xSize].symbol!='#' && board[baseOfWall-xSize-xSize+1].symbol!='#' &&
+                       board[baseOfWall-xSize-1].symbol!='_' && board[baseOfWall-xSize].symbol!='_' && board[baseOfWall-xSize+1].symbol!='_' && board[baseOfWall-xSize-xSize-1].symbol!='_' && board[baseOfWall-xSize-xSize].symbol!='_' && board[baseOfWall-xSize-xSize+1].symbol!='_' &&
+                       board[baseOfWall-xSize-1].symbol!='o' && board[baseOfWall-xSize].symbol!='o' && board[baseOfWall-xSize+1].symbol!='o' && board[baseOfWall-xSize-xSize-1].symbol!='o' && board[baseOfWall-xSize-xSize].symbol!='o' && board[baseOfWall-xSize-xSize+1].symbol!='o' && wallLength>0){
                     //finché nelle 6 caselle poste sopra la casella scelta non ci sono muri o end o start
-                    board[base-xSize].symbol='#';
-                    base -= xSize;
-                    k--;
+                    board[baseOfWall-xSize].symbol='#';
+                    baseOfWall-= xSize;
+                    wallLength--;
                 }
             }
-            else if (base%xSize==0){ //se la casella scelta fa parte della parete sinistra
-                while (board[base-xSize+1].symbol!='#' && board[base-xSize+2].symbol!='#' && board[base+1].symbol!='#' && board[base+2].symbol!='#' && board[base+xSize+1].symbol!='#' && board[base+xSize+2].symbol!='#' &&
-                       board[base-xSize+1].symbol!='_' && board[base-xSize+2].symbol!='_' && board[base+1].symbol!='_' && board[base+2].symbol!='_' && board[base+xSize+1].symbol!='_' && board[base+xSize+2].symbol!='_' &&
-                       board[base-xSize+1].symbol!='o' && board[base-xSize+2].symbol!='o' && board[base+1].symbol!='o' && board[base+2].symbol!='o' && board[base+xSize+1].symbol!='o' && board[base+xSize+2].symbol!='o' && k>0){
+            else if (baseOfWall%xSize==0){ //se la casella scelta fa parte della parete sinistra
+                while (board[baseOfWall-xSize+1].symbol!='#' && board[baseOfWall-xSize+2].symbol!='#' && board[baseOfWall+1].symbol!='#' && board[baseOfWall+2].symbol!='#' && board[baseOfWall+xSize+1].symbol!='#' && board[baseOfWall+xSize+2].symbol!='#' &&
+                       board[baseOfWall-xSize+1].symbol!='_' && board[baseOfWall-xSize+2].symbol!='_' && board[baseOfWall+1].symbol!='_' && board[baseOfWall+2].symbol!='_' && board[baseOfWall+xSize+1].symbol!='_' && board[baseOfWall+xSize+2].symbol!='_' &&
+                       board[baseOfWall-xSize+1].symbol!='o' && board[baseOfWall-xSize+2].symbol!='o' && board[baseOfWall+1].symbol!='o' && board[baseOfWall+2].symbol!='o' && board[baseOfWall+xSize+1].symbol!='o' && board[baseOfWall+xSize+2].symbol!='o' && wallLength>0){
                     //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
-                    board[base+1].symbol='#';
-                    base++;
-                    k--;
+                    board[baseOfWall+1].symbol='#';
+                    baseOfWall++;
+                    wallLength--;
                 }
             }
-            else if (base%xSize==(xSize-1)){ //se la casella scelta fa parte della parete destra
-                while (board[base-xSize-1].symbol!='#' && board[base-xSize-2].symbol!='#' && board[base-1].symbol!='#' && board[base-2].symbol!='#' && board[base+xSize-1].symbol!='#' && board[base+xSize-2].symbol!='#' &&
-                       board[base-xSize-1].symbol!='_' && board[base-xSize-2].symbol!='_' && board[base-1].symbol!='_' && board[base-2].symbol!='_' && board[base+xSize-1].symbol!='_' && board[base+xSize-2].symbol!='_' &&
-                       board[base-xSize-1].symbol!='o' && board[base-xSize-2].symbol!='o' && board[base-1].symbol!='o' && board[base-2].symbol!='o' && board[base+xSize-1].symbol!='o' && board[base+xSize-2].symbol!='o' && k>0){
+            else if (baseOfWall%xSize==(xSize-1)){ //se la casella scelta fa parte della parete destra
+                while (board[baseOfWall-xSize-1].symbol!='#' && board[baseOfWall-xSize-2].symbol!='#' && board[baseOfWall-1].symbol!='#' && board[baseOfWall-2].symbol!='#' && board[baseOfWall+xSize-1].symbol!='#' && board[baseOfWall+xSize-2].symbol!='#' &&
+                       board[baseOfWall-xSize-1].symbol!='_' && board[baseOfWall-xSize-2].symbol!='_' && board[baseOfWall-1].symbol!='_' && board[baseOfWall-2].symbol!='_' && board[baseOfWall+xSize-1].symbol!='_' && board[baseOfWall+xSize-2].symbol!='_' &&
+                       board[baseOfWall-xSize-1].symbol!='o' && board[baseOfWall-xSize-2].symbol!='o' && board[baseOfWall-1].symbol!='o' && board[baseOfWall-2].symbol!='o' && board[baseOfWall+xSize-1].symbol!='o' && board[baseOfWall+xSize-2].symbol!='o' && wallLength>0){
                     //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
-                    board[base-1].symbol='#';
-                    base--;
-                    k--;
+                    board[baseOfWall-1].symbol='#';
+                    baseOfWall--;
+                    wallLength--;
                 }
             }
             else { //se la casella scelta fa parte di un muro inserito nei cicli precedenti
-                k += 5;
-                if (board[base+1].symbol=='#' || board[base-1].symbol=='#'){ //se è un muro orizzontale
+                wallLength += 5;
+                if (board[baseOfWall+1].symbol=='#' || board[baseOfWall-1].symbol=='#'){ //se è un muro orizzontale
                     short direction = rand()%2; //scelgo un lato dal quale sviluppare un ulteriore ramo
                     switch(direction){
                         case 0: //sviluppo un ramo verso il basso
-                            while (board[base+xSize-1].symbol!='#' && board[base+xSize].symbol!='#' && board[base+xSize+1].symbol!='#' && board[base+xSize+xSize-1].symbol!='#' && board[base+xSize+xSize].symbol!='#' && board[base+xSize+xSize+1].symbol!='#' &&
-                                   board[base+xSize-1].symbol!='_' && board[base+xSize].symbol!='_' && board[base+xSize+1].symbol!='_' && board[base+xSize+xSize-1].symbol!='_' && board[base+xSize+xSize].symbol!='_' && board[base+xSize+xSize+1].symbol!='_' &&
-                                   board[base+xSize-1].symbol!='o' && board[base+xSize].symbol!='o' && board[base+xSize+1].symbol!='o' && board[base+xSize+xSize-1].symbol!='o' && board[base+xSize+xSize].symbol!='o' && board[base+xSize+xSize+1].symbol!='o' && k>0){
+                            while (board[baseOfWall+xSize-1].symbol!='#' && board[baseOfWall+xSize].symbol!='#' && board[baseOfWall+xSize+1].symbol!='#' && board[baseOfWall+xSize+xSize-1].symbol!='#' && board[baseOfWall+xSize+xSize].symbol!='#' && board[baseOfWall+xSize+xSize+1].symbol!='#' &&
+                                   board[baseOfWall+xSize-1].symbol!='_' && board[baseOfWall+xSize].symbol!='_' && board[baseOfWall+xSize+1].symbol!='_' && board[baseOfWall+xSize+xSize-1].symbol!='_' && board[baseOfWall+xSize+xSize].symbol!='_' && board[baseOfWall+xSize+xSize+1].symbol!='_' &&
+                                   board[baseOfWall+xSize-1].symbol!='o' && board[baseOfWall+xSize].symbol!='o' && board[baseOfWall+xSize+1].symbol!='o' && board[baseOfWall+xSize+xSize-1].symbol!='o' && board[baseOfWall+xSize+xSize].symbol!='o' && board[baseOfWall+xSize+xSize+1].symbol!='o' && wallLength>0){
                                 //finché nelle 6 caselle poste sotto la casella scelta non ci sono muri o end o start
-                                board[base+xSize].symbol='#';
-                                base += xSize;
-                                k--;
+                                board[baseOfWall+xSize].symbol='#';
+                                baseOfWall+= xSize;
+                                wallLength--;
                             }
                             break;
                         case 1: //sviluppo un ramo verso l'alto
-                            while (board[base-xSize-1].symbol!='#' && board[base-xSize].symbol!='#' && board[base-xSize+1].symbol!='#' && board[base-xSize-xSize-1].symbol!='#' && board[base-xSize-xSize].symbol!='#' && board[base-xSize-xSize+1].symbol!='#' &&
-                                   board[base-xSize-1].symbol!='_' && board[base-xSize].symbol!='_' && board[base-xSize+1].symbol!='_' && board[base-xSize-xSize-1].symbol!='_' && board[base-xSize-xSize].symbol!='_' && board[base-xSize-xSize+1].symbol!='_' &&
-                                   board[base-xSize-1].symbol!='o' && board[base-xSize].symbol!='o' && board[base-xSize+1].symbol!='o' && board[base-xSize-xSize-1].symbol!='o' && board[base-xSize-xSize].symbol!='o' && board[base-xSize-xSize+1].symbol!='o' && k>0){
+                            while (board[baseOfWall-xSize-1].symbol!='#' && board[baseOfWall-xSize].symbol!='#' && board[baseOfWall-xSize+1].symbol!='#' && board[baseOfWall-xSize-xSize-1].symbol!='#' && board[baseOfWall-xSize-xSize].symbol!='#' && board[baseOfWall-xSize-xSize+1].symbol!='#' &&
+                                   board[baseOfWall-xSize-1].symbol!='_' && board[baseOfWall-xSize].symbol!='_' && board[baseOfWall-xSize+1].symbol!='_' && board[baseOfWall-xSize-xSize-1].symbol!='_' && board[baseOfWall-xSize-xSize].symbol!='_' && board[baseOfWall-xSize-xSize+1].symbol!='_' &&
+                                   board[baseOfWall-xSize-1].symbol!='o' && board[baseOfWall-xSize].symbol!='o' && board[baseOfWall-xSize+1].symbol!='o' && board[baseOfWall-xSize-xSize-1].symbol!='o' && board[baseOfWall-xSize-xSize].symbol!='o' && board[baseOfWall-xSize-xSize+1].symbol!='o' && wallLength>0){
                                 //finché nelle 6 caselle poste sopra la casella scelta non ci sono muri o end o start
-                                board[base-xSize].symbol='#';
-                                base -= xSize;
-                                k--;
+                                board[baseOfWall-xSize].symbol='#';
+                                baseOfWall-= xSize;
+                                wallLength--;
                             }
                             break;
                         default:
@@ -333,23 +303,23 @@ void randomWalls(Box *board, size_t xSize, size_t ySize, int difficulty){ //posi
                     int direction = rand()%2; //scelgo un lato dal quale sviluppare un ulteriore ramo
                     switch(direction){
                         case 0: //sviluppo un ramo verso sinistra
-                            while (board[base-xSize+1].symbol!='#' && board[base-xSize+2].symbol!='#' && board[base+1].symbol!='#' && board[base+2].symbol!='#' && board[base+xSize+1].symbol!='#' && board[base+xSize+2].symbol!='#' &&
-                                   board[base-xSize+1].symbol!='_' && board[base-xSize+2].symbol!='_' && board[base+1].symbol!='_' && board[base+2].symbol!='_' && board[base+xSize+1].symbol!='_' && board[base+xSize+2].symbol!='_' &&
-                                   board[base-xSize+1].symbol!='o' && board[base-xSize+2].symbol!='o' && board[base+1].symbol!='o' && board[base+2].symbol!='o' && board[base+xSize+1].symbol!='o' && board[base+xSize+2].symbol!='o' && k>0){
+                            while (board[baseOfWall-xSize+1].symbol!='#' && board[baseOfWall-xSize+2].symbol!='#' && board[baseOfWall+1].symbol!='#' && board[baseOfWall+2].symbol!='#' && board[baseOfWall+xSize+1].symbol!='#' && board[baseOfWall+xSize+2].symbol!='#' &&
+                                   board[baseOfWall-xSize+1].symbol!='_' && board[baseOfWall-xSize+2].symbol!='_' && board[baseOfWall+1].symbol!='_' && board[baseOfWall+2].symbol!='_' && board[baseOfWall+xSize+1].symbol!='_' && board[baseOfWall+xSize+2].symbol!='_' &&
+                                   board[baseOfWall-xSize+1].symbol!='o' && board[baseOfWall-xSize+2].symbol!='o' && board[baseOfWall+1].symbol!='o' && board[baseOfWall+2].symbol!='o' && board[baseOfWall+xSize+1].symbol!='o' && board[baseOfWall+xSize+2].symbol!='o' && wallLength>0){
                                 //finché nelle 6 caselle poste a destra la casella scelta non ci sono muri o end o start
-                                board[base+1].symbol='#';
-                                base++;
-                                k--;
+                                board[baseOfWall+1].symbol='#';
+                                baseOfWall++;
+                                wallLength--;
                             }
                             break;
                         case 1: //sviluppo un ramo verso destra
-                            while (board[base-xSize-1].symbol!='#' && board[base-xSize-2].symbol!='#' && board[base-1].symbol!='#' && board[base-2].symbol!='#' && board[base+xSize-1].symbol!='#' && board[base+xSize-2].symbol!='#' &&
-                                   board[base-xSize-1].symbol!='_' && board[base-xSize-2].symbol!='_' && board[base-1].symbol!='_' && board[base-2].symbol!='_' && board[base+xSize-1].symbol!='_' && board[base+xSize-2].symbol!='_' &&
-                                   board[base-xSize-1].symbol!='o' && board[base-xSize-2].symbol!='o' && board[base-1].symbol!='o' && board[base-2].symbol!='o' && board[base+xSize-1].symbol!='o' && board[base+xSize-2].symbol!='o' && k>0){
+                            while (board[baseOfWall-xSize-1].symbol!='#' && board[baseOfWall-xSize-2].symbol!='#' && board[baseOfWall-1].symbol!='#' && board[baseOfWall-2].symbol!='#' && board[baseOfWall+xSize-1].symbol!='#' && board[baseOfWall+xSize-2].symbol!='#' &&
+                                   board[baseOfWall-xSize-1].symbol!='_' && board[baseOfWall-xSize-2].symbol!='_' && board[baseOfWall-1].symbol!='_' && board[baseOfWall-2].symbol!='_' && board[baseOfWall+xSize-1].symbol!='_' && board[baseOfWall+xSize-2].symbol!='_' &&
+                                   board[baseOfWall-xSize-1].symbol!='o' && board[baseOfWall-xSize-2].symbol!='o' && board[baseOfWall-1].symbol!='o' && board[baseOfWall-2].symbol!='o' && board[baseOfWall+xSize-1].symbol!='o' && board[baseOfWall+xSize-2].symbol!='o' && wallLength>0){
                                 //finché nelle 6 caselle poste a sinistra la casella scelta non ci sono muri o end o start
-                                board[base-1].symbol='#';
-                                base--;
-                                k--;
+                                board[baseOfWall-1].symbol='#';
+                                baseOfWall--;
+                                wallLength--;
                             }
                             break;
                         default:
@@ -362,30 +332,21 @@ void randomWalls(Box *board, size_t xSize, size_t ySize, int difficulty){ //posi
     }
 }
 
-int createLabirint(Box* board, int * end, size_t xSize, size_t ySize, int difficulty){
-    //printf("Sono entrato nella createLabirint\n");
+int createLabirint(Box* board, int * end, size_t xSize, size_t ySize, int difficulty){ //crea il labirinto
     int start = randomStart(xSize, ySize); //genera uno start in posizione casuale
-    //printf("Questo e' lo start: %d\n", start);
-    //printf("Sono tornato dalla randomStart\n");
     board[start].symbol='o';
-    //printf("Ho assegnato 'o' allo start\n");
     randomEnd(start, end, xSize, ySize); // genera un end in posizione casuale
-    //printf("Sono tornato dalla randomEnd\n");
     board[*end].symbol='_';
-    randomFlyingWalls(board, xSize, ySize, difficulty); // posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza casuale
-    //printf("Sono tornato dalla randomFlyingWalls\n");
-    randomWalls(board, xSize, ySize, difficulty); //posiziona un numero casuale di muri in posizioni casuali e di lunghezza casuale
-    //printf("Sono tornato dalla randomWalls\n");
+    randomFlyingWalls(board, xSize, ySize, difficulty); //posiziona un numero casuale di muri 'volanti' in posizioni casuali e di lunghezza e direzione casuale
+    randomWalls(board, xSize, ySize, difficulty); //posiziona un numero casuale di muri in posizioni casuali e di lunghezza e direzione casuale
     randomCoins(board, xSize, ySize); //posiziona un numero casuale di monete in posizioni casuali
-    //printf("Sono tornato dalla randomCoins\n");
     randomBombs(board, xSize, ySize); //posiziona un numero casuale di imprevisti in posizioni casuali
-    //printf("Sono tornato dalla randomBombs\n");
-    randomDrill(board, xSize, ySize);
+    randomDrill(board, xSize, ySize); //posiziona un numero casuale di trapani in posizioni casuali
     return start;
 
 }
 
-void guide(){ //informazioni per il giocatore
+void guide(){ //informazioni di gioco per l'utilizzatore
     printf("\nSEI IN MODALITA' UTENTE.\n\n");
     printf("Per muoversi all'interno del labirinto utilizzare:\n'w' per muoversi verso l'alto\n"
            "'s' per muoversi verso il basso\n'a' per per muoversi verso sinistra\n'd' per muoversi verso destra\n\n");
@@ -396,7 +357,7 @@ void guide(){ //informazioni per il giocatore
     printf("Buona partita! \n\n\n");
 }
 
-void mode(){
+void mode(){ //permette di scegliere la modalità di gioco
     printf("In che modalita' vuoi giocare?\n");
     printf("1. Modalita' utente\n");
     printf("2. Modalita' AI random\n");
@@ -409,24 +370,24 @@ void death(){ //il giocatore è morto
     exit(0);
 }
 
-void success(int *score){ //il giocatore è giunto a destinazione
+void success(int *score){ //il giocatore è giunto al traguardo
     printf("\n");
     printf("Congratulazioni! Sei arrivato a destinazione!\n");
     printf("Il tuo punteggio e': %d\n", *score);
 }
 
-void wrongInput(){ //il giocatore ha inserito in input non corretto
+void wrongInput(){ //il giocatore ha inserito un input non corretto
     printf("Input non corretto, reinserirlo.\n");
 }
 
-void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int* coins, _Bool* endGame, int* drillPoints, size_t xSize, size_t ySize, vector_t* snake){
+void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int* coins, _Bool* endGame, int* drillPoints, size_t xSize, size_t ySize, vector_t* snake){ //prossima mossa della moving
     (*score)--;
-    if (nextPosition < 0 || nextPosition>=xSize*ySize){
+    if (nextPosition < 0 || nextPosition>=xSize*ySize){ //se esce dalla parete superiore o inferiore
         death();
     }
     else {
-        if (board[nextPosition].symbol=='#') { //se la posizione sopra la posizione attuale è un muro o una parete
-            if(*drillPoints>0){
+        if (board[nextPosition].symbol=='#') { //se la nextPosition è un muro o una parete
+            if(*drillPoints>0){ //se ho drillPoints
                 v_push_back(snake, nextPosition);
                 board[v_get(snake, 0)].symbol = ' ';
                 v_pop_front(snake);
@@ -440,8 +401,7 @@ void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int
                 *endGame = 1;
             }
         }
-
-        else if (board[nextPosition].symbol=='_') { //se ho completato il percorso
+        else if (board[nextPosition].symbol=='_') { //se sono arrivato al traguardo
             v_push_back(snake, nextPosition);
             board[v_get(snake, 0)].symbol = ' ';
             v_pop_front(snake);
@@ -450,42 +410,32 @@ void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int
                 board[currentPosition].symbol = '.';
             *endGame = 1;
         }
-
-        else{ //se la posizione sopra la posizione attuale è interna al labirinto
-
-            if (board[nextPosition].symbol == ' '|| board[nextPosition].symbol == 'T' || v_size(snake) == 1) { // se è un trapano o uno spazio
+        else{ //se la nextPosition non è un muro
+            if (board[nextPosition].symbol == ' '|| board[nextPosition].symbol == 'T' || v_size(snake) == 1) { //se è un trapano o uno spazio o se la lunghezza del serpente è 1
                 if (board[nextPosition].symbol == 'T')  // se è un trapano
                     *drillPoints += 3;
                 v_push_back(snake, nextPosition);
                 board[v_get(snake, 0)].symbol = ' ';
                 if (board[nextPosition].symbol != '$')  // se non è una moneta
                     v_pop_front(snake);
-                else {
+                else { //se è una moneta
                     *score += 10;
                     (*coins)++;
                 }
             }
-
-            else if(board[nextPosition].symbol == '!') { //se incontra un imprevisto
+            else if(board[nextPosition].symbol == '!') { //se è un imprevisto
                 int snakeLength = v_size(snake);
                 int counter = snakeLength;
-                //printf("prima di entrare nel ciclo:\ncounter = %d\nsnakeLength/2 = %d\n\n", counter, snakeLength/2);
                 while(counter >= snakeLength/2){
-                    //printf("counter = %d\nsnakeLength/2 = %d\n\n", counter, snakeLength/2);
                     board[v_get(snake, 0)].symbol = ' ';
                     v_pop_front(snake);
                     counter--;
-                    //v_push_back(snake,nextPosition);
                 }
-                printf("\n");
                 v_push_back(snake,nextPosition);
-                //printf("dopo il ciclo:\ncounter = %d\nsnakeLength = %d\n", counter, snakeLength/2);
                 *score -= (*coins) * 10 / 2; //toglie il punteggio
-                *coins = *coins / 2; //dimezza numero di monete
+                *coins = *coins / 2; //dimezza il numero di monete
             }
-
-            else if(board[nextPosition].symbol == '.'){
-
+            else if(board[nextPosition].symbol == '.'){ //se è un pezzo del serpente stesso
                 while (v_get(snake, 0)!= nextPosition){
                     board[v_get(snake, 0)].symbol = ' ';
                     v_pop_front(snake);
@@ -495,23 +445,20 @@ void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int
                 v_pop_front(snake);
                 v_push_back(snake,nextPosition);
             }
-
-            else { // se incontra una moneta
+            else { // se è una moneta
                 v_push_back(snake, nextPosition);
                 *score += 10;
                 (*coins)++;
             }
-
             board[nextPosition].symbol = 'o';
             if (v_size(snake)!=1)
                 board[currentPosition].symbol = '.';
-
         }
     }
 }
 
 
-void moving (Box* board, int start, int *score, char* movesString, size_t xSize, size_t ySize, vector_t* snake){ //muove il giocatore
+void moving (Box* board, int start, int *score, char* movesString, size_t xSize, size_t ySize, vector_t* snake){ //muove il serpente
     char move;
     int currentPosition = start;
     int nextPosition;
@@ -524,11 +471,11 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
     *endGame=0;
     int* drillPoints = (int*)malloc(sizeof(int));
     *drillPoints=0;
-    int l = 0;
+    int l = 0; //scorre l'array di mosse movesString
     do{
         scanf(" %c", &move);
         switch(move){
-            case 'W':
+            case 'W': //se il giocatore va verso l'alto
             case 'w':
                 if (currentPosition<xSize){
                     death();
@@ -539,7 +486,7 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
                 nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 break;
 
-            case 'S':
+            case 'S': //se il giocatore va verso il basso
             case 's':
                 if (currentPosition>(xSize*ySize)-xSize){
                     death();
@@ -550,7 +497,7 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
                 nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 break;
 
-            case 'D':
+            case 'D': //se il giocatore va a destra
             case 'd':
                 if (currentPosition%xSize == xSize-1){
                     death();
@@ -561,7 +508,7 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
                 nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 break;
 
-            case 'A':
+            case 'A': //se il giocatore va a sinistra
             case 'a':
                 if (currentPosition%xSize == 0){
                     death();
@@ -579,6 +526,7 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
         currentPosition = nextPosition; //nuova pos. attuale
         printLabirint(board, score, xSize, ySize);
     }while(!(*endGame));
+
     movesString[l]='\0';
     success(score);
     free(coins);
@@ -743,135 +691,102 @@ void randomAlgorithm(Box* board, int start, int *score, char* movesString, size_
     *movesString = '\0';
 }
 
-void visitNextNode(Box* board, int currentPos, int nextPos, int* end, size_t xSize, int* xDist, int* yDist, _Bool* arrived){
+void visitNextNode(Box* board, int currentPos, int nextPos, int* end, size_t xSize, int* xDist, int* yDist, _Bool* arrived){ //realizza la visita di un nodo del labirinto
     board[nextPos].numCoins = board[currentPos].numCoins;
     board[nextPos].numDrills = board[currentPos].numDrills;
-    if (board[nextPos].symbol == '#'){
+    if (board[nextPos].symbol == '#'){ //se è un muro o una parete
         board[nextPos].numDrills -= 1;
     }
-    board[nextPos].gCost = 1 + board[currentPos].gCost;
+    board[nextPos].gCost = 1 + board[currentPos].gCost; //aggiorna il gCost (distanza dallo start)
     *xDist = abs(((nextPos) % xSize) - *end % xSize);
     *yDist = abs(((nextPos) / xSize) - *end / xSize);
-    board[nextPos].hCost = *yDist + *xDist;
-    if (board[nextPos].symbol == '$'){
+    board[nextPos].hCost = *yDist + *xDist; //aggiorna l'hCost (distanza euclidea dal traguardo)
+    if (board[nextPos].symbol == '$'){ //se è una moneta
         board[nextPos].numCoins = board[currentPos].numCoins + 1;
     }
-    else if (board[nextPos].symbol == '!'){
+    else if (board[nextPos].symbol == '!'){ //se è un imprevisto
         board[nextPos].numCoins = (board[currentPos].numCoins)/2;
     }
-    else if (board[nextPos].symbol == 'T'){
+    else if (board[nextPos].symbol == 'T'){ //se è un trapano
         board[nextPos].numDrills += 3;
     }
-    else {
-        board[nextPos].numCoins = board[currentPos].numCoins;
-    }
-    board[nextPos].predecessor = currentPos;
+    board[nextPos].predecessor = currentPos; //assegna il nodo predecessore
     board[nextPos].reference = nextPos;
     board[nextPos].visited = 1;
-    if (board[nextPos].symbol == '_') {
+    if (board[nextPos].symbol == '_') { //se è l'arrivo
         *arrived = 1;
     }
 }
 
-void visitFirstNode(Box* board, int start, int nextPos, int* end, size_t xSize, int* xDist, int* yDist){
-    //printf("\n\nSono entrato nella visitFirstNode\n");
-    board[nextPos].gCost = 1 + board[start].gCost;
-    //printf("board[nextPos].gCost = %d\n", board[nextPos].gCost);
+void visitFirstNode(Box* board, int start, int nextPos, int* end, size_t xSize, int* xDist, int* yDist){ //realizza la visita del primo nodo dopo lo start
+    board[nextPos].numDrills = board[start].numDrills;
+    board[nextPos].numCoins = board[start].numCoins;
+    board[nextPos].gCost = 1 + board[start].gCost; //aggiorna il gCost (distanza dallo start)
     *xDist = abs(((nextPos) % xSize) - *end % xSize);
     *yDist = abs(((nextPos) / xSize) - *end / xSize);
-    board[nextPos].hCost = *yDist + *xDist;
-    //printf("board[nextPos].hCost = %d\n", board[nextPos].hCost);
-    board[nextPos].predecessor = start;
+    board[nextPos].hCost = *yDist + *xDist; //aggiorna l'hCost (distanza euclidea dal traguardo)
+    board[nextPos].predecessor = start; //assegna come nodo predecessore lo start
     board[nextPos].reference = nextPos;
     board[nextPos].visited = 1;
-    if (board[nextPos].symbol == '$'){
+    if (board[nextPos].symbol == '$'){ //se è una moneta
         board[nextPos].numCoins = board[start].numCoins +1;
-        board[nextPos].numDrills = board[start].numDrills;
     }
-    else if (board[nextPos].symbol == 'T'){
+    else if (board[nextPos].symbol == 'T'){ //se è un trapano
         board[nextPos].numDrills += 3;
-        board[nextPos].numCoins = board[start].numCoins;
-    }
-    else {
-        board[nextPos].numDrills = board[start].numDrills;
-        board[nextPos].numCoins = board[start].numCoins;
     }
 }
 
 void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesString, size_t xSize, size_t ySize, vector_t *snake){
-    for (int i =0; i<xSize*ySize; i++){
+    for (int i =0; i<xSize*ySize; i++){ //inizializza tutti i nodi come non visitati e non esplorati
         board[i].visited=0;
         board[i].extracted=0;
     }
     int *xDist = malloc(sizeof(int));
     int *yDist = malloc(sizeof(int));
-    printLabirint(board, score, xSize, ySize);
-    board[start].gCost = 0;
+    board[start].gCost = 0; //aggiorna il gCost (distanza dallo start)
     *xDist = abs((start%xSize) - *end%xSize);
-    printf("start%%xSize: %d\n", start%xSize);
-    printf("end%%xSize: %d\n", *end%xSize);
-    printf("*xDist: %d,\n", *xDist);
     *yDist = abs((start/xSize) - *end/xSize);
-    printf("start/xSize: %d\n", start/xSize);
-    printf("end/xSize: %d\n", *end/xSize);
-    printf("*yDist: %d,\n", *yDist);
-    board[start].hCost = *yDist + *xDist;
+    board[start].hCost = *yDist + *xDist; //aggiorna l'hCost (distanza euclidea dal traguardo)
     board[start].reference = start;
     board[start].predecessor = -1;
     board[start].numCoins = 0;
     board[start].extracted = 1;
     board[start].visited = 1;
     board[start].numDrills = 0;
-
-    Box candidates[xSize*ySize];
+    Box candidates[xSize*ySize]; //vettore che conterrà tutti i nodi visitati
     candidates[0]=board[start];
-    printf("candidates[0].symbol: %c,\ncandidates[0].predecessor: %d,\ncandidates[0].fCost: %d,\n",
-           candidates[0].symbol, candidates[0].predecessor, candidates[0].gCost + candidates[0].hCost);
+    short size = 1; //permette di scorrere candidates
     short min;
     short i;
-    short size = 1;
     _Bool *arrived = malloc(sizeof(_Bool));
     *arrived=0;
     int nextPos;
+    
     if (start<xSize-1){ //se lo start è posizionato sulla parete superiore
-        printf("Sono entrato nell'if basso\n");
         nextPos = start + xSize;
-        printf("start = %d, nextPos = %d\n", start, nextPos);
         visitFirstNode(board, start, nextPos, end, xSize, xDist, yDist);
     }
     else if (start>((xSize*ySize)-xSize)){ //se lo start è posizionato sulla parete inferiore
-        printf("Sono entrato nell'if alto\n");
         nextPos = start - xSize;
-        printf("start = %d, nextPos = %d\n", start, nextPos);
         visitFirstNode(board, start, nextPos, end, xSize, xDist, yDist);
     }
-
     else if (start%xSize==0){ //se lo start è posizionato sulla parete sinistra
-        printf("Sono entrato nell'if destro\n");
         nextPos = start + 1;
-        printf("start = %d, nextPos = %d\n", start, nextPos);
         visitFirstNode(board, start, nextPos, end, xSize, xDist, yDist);
     }
-
     else { //se lo start è posizionato sulla parete destra
-        printf("Sono entrato nell'if sinistro\n");
         nextPos = start - 1;
-        printf("start = %d, nextPos = %d\n", start, nextPos);
         visitFirstNode(board, start, nextPos, end, xSize, xDist, yDist);
     }
-
-    printf("Sono tornato dalla firstMove e nextPos = %d\n", nextPos);
-    printf("board[nextPos].reference = %d\n", board[nextPos].reference);
     candidates[size] = board[nextPos];
     size++;
     candidates[0].extracted=1;
 
     while (!(*arrived)) {
         min = xSize*ySize;
-        printf("\n");
-        for (int j = 0; j < size; j++) {/*
+        for (int j = 0; j < size; j++) {/* //scorre candidates per trovare il nodo con fCost minore che non è ancora stato estratto
              printf("\ncandidates[%d].extracted: %d\n",j, candidates[j].extracted);
-             printf("  t: %d\n", candidates[j].reference);
+             printf("  extractedPosition: %d\n", candidates[j].reference);
              printf("  candidates[%d].predecessor: %d\n",j, candidates[j].predecessor);
              printf("  candidates[%d].numCoins: %d\n",j, candidates[j].numCoins);
              printf("  candidates[%d].hCost: %d\n",j, candidates[j].hCost);
@@ -883,69 +798,61 @@ void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesStri
                 i = j;
              }
         }
-
-        printf("\n\n");
         candidates[i].extracted=1;
-        int t = candidates[i].reference; // t rappresenta la posizione nel labirinto della casella estratta tra i candidati
-        board[t].predecessor=candidates[i].predecessor;
-        board[t].hCost=candidates[i].hCost;
-        board[t].gCost=candidates[i].gCost;
-/*
-            printf("\n\n!board[t - xSize].visited = %d,\nt>=xSize = %d\nboard[t - xSize].symbol = %c\nboard[t].predecessor != t -xSize = %d\n"
-                    , !board[t - xSize].visited, t>=xSize,board[t - xSize].symbol, board[t].predecessor != t -xSize);*/
+        int extractedPosition = candidates[i].reference; // extractedPosition rappresenta la posizione nel labirinto della casella estratta tra i candidati
+        board[extractedPosition].predecessor=candidates[i].predecessor;
+        board[extractedPosition].hCost=candidates[i].hCost;
+        board[extractedPosition].gCost=candidates[i].gCost;
 
-
-        if (!board[t - xSize].visited && t - xSize > 0 && (board[t].numDrills > 0 || board[t - xSize].symbol != '#') && board[t - xSize].symbol != 'o' && board[t].predecessor != t -xSize) { //casella alta se essa non è un muro e se non è il predecessore del nodo predecessore
-            printf("Sono entrato nell'if alto\n");
-            nextPos = t - xSize;
-            visitNextNode(board, t, nextPos, end, xSize, xDist, yDist, arrived);
-            candidates[size] = board[nextPos];
-            size++;
-        }
-/*
-          printf("\n\n!board[t +1 ].visited = %d,\nboard[t+1].symbol = %c\nboard[t].predecessor != t + 1 = %d\n"
-                , !board[t +1].visited, board[t +1].symbol, board[t].predecessor != t +1);*/
-
-        if (!board[t + 1].visited && (t + 1)%xSize != 0 && (board[t].numDrills > 0 || board[t + 1].symbol != '#') && board[t + 1].symbol != 'o' && board[t].predecessor != t +1) { //casella a destra se essa non è un muro e se non è il predecessore del nodo predecessore
-            printf("Sono entrato nell'if destro\n");
-            nextPos = t + 1;
-            visitNextNode(board, t, nextPos, end, xSize, xDist, yDist, arrived);
-            candidates[size] = board[nextPos];
-            size++;
-        }
-/*
-          printf("\n\n!board[t + xSize].visited = %d,\nt<xSize*ySize-xSize = %d\nboard[t + xSize].symbol = %c\nboard[t].predecessor != t +xSize = %d\n"
-                  , !board[t + xSize].visited, t<xSize*ySize-xSize,board[t + xSize].symbol, board[t].predecessor != t +xSize);*/
-
-        if (!board[t + xSize].visited && t<xSize*ySize && (board[t].numDrills > 0 || board[t + xSize].symbol != '#') && board[t + xSize].symbol != 'o' && board[t].predecessor != t +xSize) { //casella bassa se essa non è un muro e se non è il predecessore del nodo predecessore
-            printf("Sono entrato nell'if basso\n");
-            nextPos = t + xSize;
-            visitNextNode(board, t, nextPos, end, xSize, xDist, yDist, arrived);
-            candidates[size] = board[nextPos];
-            size++;
-        }
-/*
-           printf("\n\n!board[t -1 ].visited = %d,\nboard[t-1].symbol = %c\nboard[t].predecessor != t -1 = %d\n"
-                 , !board[t -1].visited, board[t -1].symbol, board[t].predecessor != t -1);*/
-
-        if (!board[t - 1].visited && (t - 1)%xSize != (xSize-1) && (board[t].numDrills > 0 || board[t - 1].symbol != '#') && board[t - 1].symbol != 'o' && board[t].predecessor != t -1) { //casella a sinistra se essa non è un muro e se non è il predecessore del nodo predecessore
-            printf("Sono entrato nell'if sinistro\n");
-            nextPos = t - 1;
-            visitNextNode(board, t, nextPos, end, xSize, xDist, yDist, arrived);
+        /*
+            printf("\n\n!board[extractedPosition - xSize].visited = %d,\nt>=xSize = %d\nboard[extractedPosition - xSize].symbol = %c\nboard[extractedPosition].predecessor != extractedPosition -xSize = %d\n"
+                    , !board[extractedPosition - xSize].visited, t>=xSize,board[extractedPosition - xSize].symbol, board[extractedPosition].predecessor != extractedPosition -xSize);*/
+        if (!board[extractedPosition - xSize].visited && extractedPosition - xSize > 0 && (board[extractedPosition].numDrills > 0 || board[extractedPosition - xSize].symbol != '#') && board[extractedPosition - xSize].symbol != 'o' && board[extractedPosition].predecessor != extractedPosition -xSize) { //casella alta se essa non è un muro e se non è il predecessore del nodo in questione
+            nextPos = extractedPosition - xSize;
+            visitNextNode(board, extractedPosition, nextPos, end, xSize, xDist, yDist, arrived);
             candidates[size] = board[nextPos];
             size++;
         }
 
+        /*
+          printf("\n\n!board[extractedPosition +1 ].visited = %d,\nboard[t+1].symbol = %c\nboard[extractedPosition].predecessor != extractedPosition + 1 = %d\n"
+                , !board[extractedPosition +1].visited, board[extractedPosition +1].symbol, board[extractedPosition].predecessor != extractedPosition +1);*/
+        if (!board[extractedPosition + 1].visited && (extractedPosition + 1)%xSize != 0 && (board[extractedPosition].numDrills > 0 || board[extractedPosition + 1].symbol != '#') && board[extractedPosition + 1].symbol != 'o' && board[extractedPosition].predecessor != extractedPosition +1) { //casella a destra se essa non è un muro e se non è il predecessore del nodo in questione
+            nextPos = extractedPosition + 1;
+            visitNextNode(board, extractedPosition, nextPos, end, xSize, xDist, yDist, arrived);
+            candidates[size] = board[nextPos];
+            size++;
+        }
+        
+        /*
+          printf("\n\n!board[extractedPosition + xSize].visited = %d,\nextractedPosition<xSize*ySize-xSize = %d\nboard[extractedPosition + xSize].symbol = %c\nboard[extractedPosition].predecessor != extractedPosition +xSize = %d\n"
+                  , !board[extractedPosition + xSize].visited, extractedPosition<xSize*ySize-xSize,board[extractedPosition + xSize].symbol, board[extractedPosition].predecessor != extractedPosition +xSize);*/
+        if (!board[extractedPosition + xSize].visited && extractedPosition<xSize*ySize && (board[extractedPosition].numDrills > 0 || board[extractedPosition + xSize].symbol != '#') && board[extractedPosition + xSize].symbol != 'o' && board[extractedPosition].predecessor != extractedPosition +xSize) { //casella bassa se essa non è un muro e se non è il predecessore del nodo in questione
+            nextPos = extractedPosition + xSize;
+            visitNextNode(board, extractedPosition, nextPos, end, xSize, xDist, yDist, arrived);
+            candidates[size] = board[nextPos];
+            size++;
+        }
+
+        /*
+           printf("\n\n!board[extractedPosition -1 ].visited = %d,\nboard[t-1].symbol = %c\nboard[extractedPosition].predecessor != extractedPosition -1 = %d\n"
+                 , !board[extractedPosition -1].visited, board[extractedPosition -1].symbol, board[extractedPosition].predecessor != extractedPosition -1);*/
+        if (!board[extractedPosition - 1].visited && (extractedPosition - 1)%xSize != (xSize-1) && (board[extractedPosition].numDrills > 0 || board[extractedPosition - 1].symbol != '#') && board[extractedPosition - 1].symbol != 'o' && board[extractedPosition].predecessor != extractedPosition -1) { //casella a sinistra se essa non è un muro e se non è il predecessore del nodo in questione
+            nextPos = extractedPosition - 1;
+            visitNextNode(board, extractedPosition, nextPos, end, xSize, xDist, yDist, arrived);
+            candidates[size] = board[nextPos];
+            size++;
+        }
+    /*
         printf("   candidates[size].symbol: %c,\n   candidates[size].predecessor: %d,\n   candidates[size].numCoins: %d,\n"
             "   candidates[size].fCost: %d\n   candidates[size].reference: %d\n\n", candidates[size-1].symbol,
             candidates[size-1].predecessor, candidates[size-1].numCoins,
-            candidates[size-1].gCost + candidates[size-1].hCost - candidates[size-1].numCoins*10, candidates[size-1].reference);
+            candidates[size-1].gCost + candidates[size-1].hCost - candidates[size-1].numCoins*10, candidates[size-1].reference);*/
     }
-
 
     int* predecessors = (int*)malloc(sizeof(int)*xSize*ySize);//short predecessors[xSize*ySize]; //vettore che contiene tutti i predecessori
     int j = 0; // posizione nell'array predecessors
-    int k = *end; // serve per scorrere a ritroso le posizioni del percorso
+    int k = *end; // k serve per scorrere a ritroso le posizioni del percorso
 
     while (k!=start){
         predecessors[j]=k;
@@ -960,7 +867,7 @@ void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesStri
     }*/
 
     short predecessorsSize = j;
-    short path[j]; //vettore che contiene tutte le posizioni del labirinto facenti parte del percorso migliore
+    short path[j]; //vettore che contiene tutte le posizioni del labirinto facenti parte del percorso migliore, dallo start al traguardo
     for(i=0; i<=predecessorsSize; i++){
         path[i]=predecessors[j];
         j--;
@@ -972,8 +879,7 @@ void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesStri
     }
     printf("\n");*/
 
-    int l=0;
-
+    int l=0; //permettere di scorrere il vettore movesString
     for (int i =1; i<=predecessorsSize; i++){
         if (path[i]==path[i-1]-xSize)//se va verso l'alto
             movesString[l]='N';
@@ -981,11 +887,11 @@ void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesStri
             movesString[l]='E';
         else if (path[i]==path[i-1]+xSize)//se va verso il basso
             movesString[l]='S';
-        else
+        else //se va a sinistra
             movesString[l]='O';
         l++;
     }
-    movesString[l]='\0';
+    movesString[l]='\0'; //carattere di terminazione
 
     char move;
     int currentPosition;
@@ -1000,7 +906,7 @@ void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesStri
     int* drillPoints = (int*)malloc(sizeof(int));
     *drillPoints=0;
 
-    for (int i=0; i<predecessorsSize; i++){
+    for (int i=0; i<predecessorsSize; i++){ //crea il serpente e mostra la sua evoluzione all'interno del percorso
         currentPosition = path[i];
         nextPosition = path[i+1];
         nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
@@ -1015,21 +921,20 @@ void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesStri
 }
 
 
-int inputBoard(Box *board, int start, int* end){
-    char* s = (char*)malloc(sizeof(char)*xSize); //stringa di input
+int inputBoard(Box *board, int start, int* end, size_t xSize, size_t ySize){ //permette di prendere in input un labirinto
+    char* string = (char*)malloc(sizeof(char)*xSize); //stringa di input
     int i;
     for (i=0; i<ySize; i++){
-        scanf(" %[^\n]s", s);
+        scanf(" %[^\n]s", string);
         int j;
         for(j=0;j<xSize;j++){
-            board[i*xSize+j].symbol=s[j];
+            board[i*xSize+j].symbol=string[j];
         }
     }
-    free(s);
+    free(string);
 
     _Bool found =0;
     i=0;
-
     while (!found){ //cerco lo start
         if (board[i].symbol=='o'){
             start = i;
@@ -1040,7 +945,6 @@ int inputBoard(Box *board, int start, int* end){
 
     found = 0;
     i=0;
-
     while (!found){ //cerco l'end
         if (board[i].symbol=='_'){
             *end = i;
@@ -1051,32 +955,31 @@ int inputBoard(Box *board, int start, int* end){
     return start;
 }
 
-void challenge(Box *board, int start, int* end, int *score, char* movesString, vector_t *snake){
+void challenge(Box *board, int start, int* end, int *score, size_t xSize, size_t ySize, char* movesString, vector_t *snake){ //permette di svolgere le challenge assegnate dal professore durante il corso
     printf("MODALITA' SFIDA!\n");
     scanf(" %d", &xSize);
     scanf(" %d", &ySize);
-    start = inputBoard(board, start, end);
+    start = inputBoard(board, start, end, xSize, ySize);
     aStarAlgorithm(board, start, end, score, movesString, xSize, ySize, snake);
 }
 
 int main(int argc, char *argv[]){
     int* end = (int*)malloc(sizeof(int));
-    Box board[xSize*ySize];
     char* moves = (char*) malloc(10000*sizeof(char)); //il vettore nel quale salverò la sequenza di mosse
     vector_t* snake = v_create();
     int* score=malloc(sizeof(int));
     *score = 1000;
     printf("\nBENVENUTO NELLO SNAKE DI LUCA E FRANCO!\n");
-    if (argc==2 && strcmp(argv[1], "--challenge")==0){
-        challenge(board, 0, end, score, moves, snake);
+    size_t xSize, ySize;
+    /*if (argc==2 && strcmp(argv[1], "--challenge")==0){
+        challenge(board, 0, end, score, xSize, ySize, moves, snake);
         printf("%s\n", moves);
         exit(0);
-    }
+    }*/
     srand(time(NULL)); //funzione che determina il seme per la randomizzazione
     printf("\nPrima di cominciare inserire le dimensioni del labirinto.\n");
-
     _Bool wrongChar = 1;
-    while (wrongChar){
+    while (wrongChar){ //finché l'input dato è fuori dal range 3-40
         printf("Larghezza:");
         scanf(" %d", &xSize);
         if (xSize<3){
@@ -1088,7 +991,7 @@ int main(int argc, char *argv[]){
         else wrongChar=0;
     }
     wrongChar = 1;
-    while (wrongChar){
+    while (wrongChar){ //finché l'input dato è fuori dal range 3-40
         printf("Altezza:");
         scanf(" %d", &ySize);
         if (ySize<3){
@@ -1100,16 +1003,17 @@ int main(int argc, char *argv[]){
         else wrongChar=0;
     }
     printf("\n");
-    char choose;
+    Box board[xSize*ySize];
     wrongChar = 1;
     printf("Cosa vuoi utilizzare?\n1. Un labirinto inserito da me\n2. Un labirinto generato automaticamente dal programma\n");
-    int start;
+    int start; //punto di partenza del labirinto
+    char choose;
     while (wrongChar){
         scanf(" %c", &choose);
         printf("\n");
         if(choose== '1') { //se l'utente vuole inserire il proprio labirinto
             printf("Inserisci il tuo labirinto:\n");
-            start = inputBoard(board, start, end);
+            start = inputBoard(board, start, end, xSize, ySize);
         }
         else if (choose== '2') { //se l'utente vuole utilizzare il labirinto generato dal programma
             printf("Scegli la difficolta' di gioco:\n1. Facile\n2. Media\n3. Difficile\n");
@@ -1123,27 +1027,24 @@ int main(int argc, char *argv[]){
         }
 
         printf("\n");
-        mode();
-
+        mode(); //chiede all'utente in che modalità vuole giocare
         wrongChar = 1;
         while (wrongChar){
             scanf(" %c", &choose);
             printf("\n");
-            if(choose== '1') {
+            if(choose== '1') { //se vuole utilizzare la modalità utente
                 guide();
                 moving(board, start, score, moves, xSize, ySize, snake);
                 wrongChar=0;
             }
-            else if (choose== '2'){
+            else if (choose== '2'){ //se vuole utilizzare l'AI randomico
                 randomAlgorithm(board, start, score, moves,xSize, ySize, snake);
                 wrongChar=0;
             }
-
-            else if(choose == '3'){
+            else if(choose == '3'){ //se vuole utilizzare l'AI avanzato
                 aStarAlgorithm(board, start, end, score, moves, xSize, ySize, snake);
                 wrongChar=0;
             }
-
             else {
                 wrongInput();
             }
@@ -1151,6 +1052,5 @@ int main(int argc, char *argv[]){
         printf("\nSequenza di mosse effettuate per arrivare al traguardo:\n");
         printf("%s\n", moves);
     }
-
     return 0;
 }
