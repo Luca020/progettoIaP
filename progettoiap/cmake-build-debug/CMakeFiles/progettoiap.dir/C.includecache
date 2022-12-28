@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/ilmio/Desktop/progettoiap/dvector.h
+
+C:/Users/ilmio/Desktop/progettoiap/snakeepico.c
+stdio.h
+-
+stdlib.h
+-
+time.h
+-
+string.h
+-
+dvector.h
+C:/Users/ilmio/Desktop/progettoiap/dvector.h
+

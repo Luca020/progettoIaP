@@ -118,7 +118,7 @@ void randomEnd(int start, int* end, size_t xSide, size_t ySide){ // genera un en
 }
 
 
-void PrintLabirint(Box* board, int score, size_t xSide, size_t ySide, vector_t* snake){ //stampa il labirinto
+void printLabirint(Box* board, int score, size_t xSide, size_t ySide, vector_t* snake){ //stampa il labirinto
     //printf("Sono entrato nella printLabirint\n");
     for(int i = 0; i < ySide; i++){
         for(int j = 0; j < xSide; j++){
@@ -433,22 +433,22 @@ int createLabirint(Box* board, int * end, size_t xSide, size_t ySide, int diffic
 
 }
 
-char welcome(){
-    printf("Benvenuto! In che modalita' vuoi giocare?\n");
-    printf("Per modalita' utente premere 'a'\n");
-    printf("Per modalita' AI random premere 'b'\n");
-    printf("Per modalita' AI avanzata premere 'c'");
-    printf("\n");
-}
-
 void guide(){ //informazioni per il giocatore
-    printf("SEI IN MODALITA' UTENTE.\n\n");
+    printf("\nSEI IN MODALITA' UTENTE.\n\n");
     printf("Per muoversi all'interno del labirinto utilizzare:\n'w' per muoversi verso l'alto\n"
            "'s' per muoversi verso il basso\n'a' per per muoversi verso sinistra\n'd' per muoversi verso destra\n\n");
     printf("Partendo dallo start (o) raggiungere il traguardo (_) con il punteggio piu' alto possibile. \n");
-    printf("Ogni mossa costa un punto. \nOgni moneta ($) concede 3 punti extra.\n"
-           "Ogni imprevisto (!) dimezza il numero di monete raccolte fino a quel momento.\n\n");
-    printf("BUONA PARTITA! \n\n\n");
+    printf("Ogni mossa costa un punto. \nOgni moneta ($) concede 10 punti extra.\n"
+           "Ogni imprevisto (!) dimezza il numero di monete raccolte fino a quel momento.\n"
+           "Ogni trapano (T) permette di perforare 3 muri.\n\n");
+    printf("Buona partita! \n\n\n");
+}
+
+void welcome(){
+    printf("Benvenuto! In che modalita' vuoi giocare?\n");
+    printf("1. Modalita' utente\n");
+    printf("2. Modalita' AI random\n");
+    printf("3. Modalita' AI avanzata\n");
 }
 
 
@@ -516,36 +516,42 @@ int nextMove(Box* board, int nextPosition, int score, int* coins, _Bool* endGame
 void modifySnake(Box* board, size_t xSide, size_t ySide, vector_t* snake, int nextPosition, int currentPosition, int snakeLength){
     if(board[nextPosition].symbol == '$'){
         v_push_back(snake, nextPosition);
-            board[nextPosition].symbol = 'o';
-            board[currentPosition].symbol = '.';
-    }else if(board[nextPosition].symbol == ' '|| board[nextPosition].symbol == 'T' || v_size(snake) == 1){
+        board[nextPosition].symbol = 'o';
+        board[currentPosition].symbol = '.';
+    }
+    else if(board[nextPosition].symbol == ' '|| board[nextPosition].symbol == 'T' || v_size(snake) == 1){
         v_push_back(snake, nextPosition);
         board[nextPosition].symbol = 'o';
         board[currentPosition].symbol = '.';
         board[v_get(snake, 0)].symbol = ' ';
         v_pop_front(snake);
-    }else if(board[nextPosition].symbol == '!'){
+    }
+    else if(board[nextPosition].symbol == '!'){
         snakeLength = v_size(snake);
-        int half = (v_size(snake)/2)-1;
-        printf("snakelength = %d\nv_size = %ld", snakeLength, v_size(snake));
+        int counter = snakeLength;
+        printf("prima di entrare nel ciclo:\ncounter = %d\nsnakeLength/2 = %d\n\n", counter, snakeLength/2);
         //board[v_get(snake, 0)].symbol = ' ';
-        while(snakeLength != half){
+        while(counter >= snakeLength/2){
+            printf("counter = %d\nsnakeLength/2 = %d\n\n", counter, snakeLength/2);
             board[v_get(snake, 0)].symbol = ' ';
             v_pop_front(snake);
-            snakeLength--;
+            counter--;
             //v_push_back(snake,nextPosition);
         }
+        printf("\n");
         v_push_back(snake,nextPosition);
-        printf("snakelength = %d\nv_size = %ld", snakeLength, v_size(snake));
+        printf("dopo il ciclo:\ncounter = %d\nsnakeLength = %d\n", counter, snakeLength/2);
         board[nextPosition].symbol = 'o';
-        board[currentPosition].symbol = '.';              
-    }else if(board[nextPosition].symbol == '.'){
-        for(int i = 0; i < v_size(snake); i++){
-            if(v_get(snake, i) != nextPosition)
+        if (v_size(snake)!=1)
+            board[currentPosition].symbol = '.';
+    }
+    else if(board[nextPosition].symbol == '.'){
+        while (v_get(snake, 0)!= nextPosition){
             board[v_get(snake, 0)].symbol = ' ';
             v_pop_front(snake);
-        }   
-        v_push_back(snake,currentPosition);
+        }
+        v_pop_front(snake);
+        v_push_back(snake,nextPosition);
         board[nextPosition].symbol = 'o';
         board[currentPosition].symbol = '.';
     }
@@ -556,7 +562,7 @@ void moving (Box* board, int start, int score, char* movesString, size_t xSide, 
     int currentPosition = start;
     v_push_back(snake, start);
     v_print(snake);
-    PrintLabirint(board, score, xSide, ySide, snake);
+    printLabirint(board, score, xSide, ySide, snake);
     int* coins = (int*)malloc(sizeof(int)); //monete raccolte
     *coins=0;
     _Bool* endGame=(_Bool*)malloc(sizeof(_Bool));
@@ -575,11 +581,11 @@ void moving (Box* board, int start, int score, char* movesString, size_t xSide, 
                 *movesString = 'N';
                 //score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 modifySnake(board, xSide, ySide, snake, nextPosition, currentPosition, snakeLength);
-                printf("snakelength = %d\nv_size = %ld", snakeLength, v_size(snake));
+                printf("snakelength = %d\nv_size = %ld\n", snakeLength, v_size(snake));
                 score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 v_print(snake);
-                currentPosition = currentPosition - xSide; //nuova pos. attuale
-                PrintLabirint(board, score, xSide, ySide, snake);
+                currentPosition = nextPosition; //nuova pos. attuale
+                printLabirint(board, score, xSide, ySide, snake);
 
                 /* *movesString = 'N';
                 movesString++;
@@ -622,11 +628,11 @@ void moving (Box* board, int start, int score, char* movesString, size_t xSide, 
                 *movesString = 'S';
                 //score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 modifySnake(board, xSide, ySide, snake, nextPosition, currentPosition, snakeLength);
-                printf("snakelength = %d\nv_size = %ld", snakeLength, v_size(snake));
+                printf("snakelength = %d\nv_size = %ld\n", snakeLength, v_size(snake));
                 score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 v_print(snake);
-                currentPosition = currentPosition + xSide; //nuova pos. attuale
-                PrintLabirint(board, score, xSide, ySide, snake);
+                currentPosition = nextPosition; //nuova pos. attuale
+                printLabirint(board, score, xSide, ySide, snake);
                 /*
                 *movesString = 'S';
                 movesString++;
@@ -670,11 +676,11 @@ void moving (Box* board, int start, int score, char* movesString, size_t xSide, 
                 *movesString = 'E';
                 //score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 modifySnake(board, xSide, ySide, snake, nextPosition, currentPosition, snakeLength);
-                printf("snakelength = %d\nv_size = %ld", snakeLength, v_size(snake));
+                printf("snakelength = %d\nv_size = %ld\n", snakeLength, v_size(snake));
                 score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 v_print(snake);
-                currentPosition = currentPosition + 1; //nuova pos. attuale
-                PrintLabirint(board, score, xSide, ySide,snake);/*
+                currentPosition = nextPosition; //nuova pos. attuale
+                printLabirint(board, score, xSide, ySide,snake);/*
                 *movesString = 'E';
                 movesString++;
                 if (board[currentPosition +1].symbol==' ' || board[currentPosition + 1].symbol=='.' || board[currentPosition +1].symbol=='$' || board[currentPosition +1].symbol=='!'){ //se la posizione a destra della posizione attuale è parte del labirinto
@@ -716,12 +722,12 @@ void moving (Box* board, int start, int score, char* movesString, size_t xSide, 
                 *movesString = 'O';
                 //score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 modifySnake(board, xSide, ySide, snake, nextPosition, currentPosition, snakeLength);
-                printf("snakelength = %d\nv_size = %ld", snakeLength, v_size(snake));
+                printf("snakelength = %d\nv_size = %ld\n", snakeLength, v_size(snake));
                 
                 score = nextMove(board, nextPosition, score, coins, endGame, movesString, drillPoints, xSide, ySide, snake);
                 v_print(snake);
-                currentPosition = currentPosition - 1; //nuova pos. attuale
-                PrintLabirint(board, score, xSide, ySide, snake);/*
+                currentPosition = nextPosition; //nuova pos. attuale
+                printLabirint(board, score, xSide, ySide, snake);/*
                 *movesString = 'O';
                 movesString++;
                 if  (board[currentPosition - 1].symbol==' ' || board[currentPosition - 1].symbol=='.' || board[currentPosition -1].symbol=='$' || board[currentPosition -1].symbol=='!'){ //se la posizione a sinistra della posizione attuale è parte del labirinto
@@ -772,7 +778,7 @@ void moving (Box* board, int start, int score, char* movesString, size_t xSide, 
 
 void randomAlgorithm(Box* board, int start, int score, char* movesString, size_t xSide, size_t ySide, vector_t* snake){
     int currentPosition = start;
-    PrintLabirint(board, score, xSide, ySide, snake);
+    printLabirint(board, score, xSide, ySide, snake);
     int coins = 0; //monete raccolte
     _Bool endGame=0;
     do{
@@ -797,14 +803,14 @@ void randomAlgorithm(Box* board, int start, int score, char* movesString, size_t
                     //system("clear");
                     *movesString = 'N';
                     movesString++;
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                 }
                 else if (board[currentPosition - xSide].symbol=='_') { //se ho completato il percorso
                     board[currentPosition].symbol= '.';
                     board[currentPosition - xSide].symbol= 'o';
                     score--;
                     //system("clear");
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                     success(score);
                     endGame = 1;
                 }
@@ -832,14 +838,14 @@ void randomAlgorithm(Box* board, int start, int score, char* movesString, size_t
                     //system("clear");
                     *movesString = 'S';
                     movesString++;
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                 }
                 else if (board[currentPosition + xSide].symbol=='_') { //se ho completato il percorso
                     board[currentPosition].symbol='.';
                     board[currentPosition + xSide].symbol='o';
                     score--;
                     //system("clear");
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                     success(score);
                     endGame = 1;
                 }
@@ -867,14 +873,14 @@ void randomAlgorithm(Box* board, int start, int score, char* movesString, size_t
                     *movesString = 'E';
                     movesString++;
                     //system("clear");
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                 }
                 else if (board[currentPosition + 1].symbol=='_') { //se ho completato il percorso
                     board[currentPosition].symbol='.';
                     board[currentPosition + 1].symbol='o';
                     score--;
                     //system("clear");
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                     success(score);
                     endGame = 1;
                 }
@@ -902,14 +908,14 @@ void randomAlgorithm(Box* board, int start, int score, char* movesString, size_t
                     //system("clear");
                     *movesString = 'O';
                     movesString++;
-                    PrintLabirint(board, score, xSide, ySide,snake);
+                    printLabirint(board, score, xSide, ySide,snake);
                 }
                 else if (board[currentPosition - 1].symbol=='_') { //se ho completato il percorso
                     board[currentPosition].symbol='.';
                     board[currentPosition - 1].symbol='o';
                     score--;
                     //system("clear");
-                    PrintLabirint(board, score, xSide, ySide, snake);
+                    printLabirint(board, score, xSide, ySide, snake);
                     success(score);
                     endGame = 1;
                 }
@@ -928,7 +934,7 @@ void randomAlgorithm(Box* board, int start, int score, char* movesString, size_t
 }
 
 
-void firstMove(Box* board, int start, int nextPos, int* end, size_t xSide, int* xDist, int* yDist){
+void firstMoveAStar(Box* board, int start, int nextPos, int* end, size_t xSide, int* xDist, int* yDist){
     board[nextPos].gCost = 1 + board[start].gCost;
     *xDist = abs(((nextPos) % xSide) - *end % xSide);
     *yDist = abs(((nextPos) / xSide) - *end / xSide);
@@ -1011,24 +1017,24 @@ void aStarAlgorithm(Box* board, int start, int* end, char* movesString, size_t x
     if (start<xSide-1){ //se lo start è posizionato sulla parete superiore
         //printf("Sono entrato nell'if basso\n");
         nextPos = start + xSide;
-        firstMove(board, start, nextPos, end, xSide, xDist, yDist);
+        firstMoveAStar(board, start, nextPos, end, xSide, xDist, yDist);
     }
     else if (start>((xSide*ySide)-xSide)){ //se lo start è posizionato sulla parete inferiore
         //printf("Sono entrato nell'if alto\n");
         nextPos = start - xSide;
-        firstMove(board, start, nextPos, end, xSide, xDist, yDist);
+        firstMoveAStar(board, start, nextPos, end, xSide, xDist, yDist);
     }
 
     else if (start%xSide==0){ //se lo start è posizionato sulla parete sinistra
         //printf("Sono entrato nell'if destro\n");
         nextPos = start + 1;
-        firstMove(board, start, nextPos, end, xSide, xDist, yDist);
+        firstMoveAStar(board, start, nextPos, end, xSide, xDist, yDist);
     }
 
     else { //se lo start è posizionato sulla parete destra
         //printf("Sono entrato nell'if sinistro\n");
         nextPos = start - 1;
-        firstMove(board, start, nextPos, end, xSide, xDist, yDist);
+        firstMoveAStar(board, start, nextPos, end, xSide, xDist, yDist);
     }
 
     candidates[size] = board[nextPos];
