@@ -380,13 +380,13 @@ void wrongInput(){ //il giocatore ha inserito un input non corretto
     printf("Input non corretto, reinserirlo.\n");
 }
 
-void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int* coins, _Bool* endGame, int* drillPoints, size_t xSize, size_t ySize, vector_t* snake){ //prossima mossa della moving
+void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int* coins, _Bool* endGame, int* drillPoints, size_t xSize, size_t ySize, vector_t* snake ){ //prossima mossa della moving
     (*score)--;
     if (nextPosition < 0 || nextPosition>=xSize*ySize){ //se esce dalla parete superiore o inferiore
         death();
     }
     else {
-        if (board[nextPosition].symbol=='#') { //se la nextPosition è un muro o una parete
+        if ((board[nextPosition].symbol=='#')) { //se la nextPosition è un muro o una parete
             if(*drillPoints>0){ //se ho drillPoints
                 v_push_back(snake, nextPosition);
                 board[v_get(snake, 0)].symbol = ' ';
@@ -472,8 +472,7 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
     int* drillPoints = (int*)malloc(sizeof(int));
     *drillPoints=0;
     int l = 0; //scorre l'array di mosse movesString
-    do{
-        scanf(" %c", &move);
+    do{ 
         switch(move){
             case 'W': //se il giocatore va verso l'alto
             case 'w':
@@ -536,159 +535,59 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
 
 void randomAlgorithm(Box* board, int start, int *score, char* movesString, size_t xSize, size_t ySize, vector_t* snake){
     int currentPosition = start;
+    int nextPosition;
+    v_push_back(snake, start);
+    int* coins = (int*)malloc(sizeof(int)); //monete raccolte
+    *coins=0;
+    _Bool* endGame=(_Bool*)malloc(sizeof(_Bool));
+    *endGame=0;
+    int* drillPoints = (int*)malloc(sizeof(int));
+    *drillPoints=0;
+    int l = 0; //scorre l'array di mosse movesString
     printLabirint(board, score, xSize, ySize);
-    int coins = 0; //monete raccolte
-    _Bool endGame=0;
-    do{
+    do{ 
         int move = rand()%4;
         switch(move){
             case 0:
-                if (board[currentPosition - xSize].symbol==' ' || board[currentPosition - xSize].symbol=='.' || board[currentPosition -xSize].symbol=='$' || board[currentPosition -xSize].symbol=='!'){ //se la posizione sopra la posizione attuale è parte del labirinto
-                    board[currentPosition].symbol= '.';
-                    if (board[currentPosition - xSize].symbol=='!'){ //se incontra un imprevisto
-                        *score -= coins*10/2; //toglie il punteggio
-                        coins = coins/2; //dimezza numero di monete
-                    }
-                    else if (board[currentPosition - xSize].symbol=='$'){ // se incontra una moneta
-                        *score += 10;
-                        coins ++;
-                    }
-                    else { //altrimenti
-                        (*score)--;
-                    }
-                    board[currentPosition - xSize].symbol= 'o';
-                    currentPosition = currentPosition - xSize; //nuova pos. attuale
-                    //system("clear");
-                    *movesString = 'N';
-                    movesString++;
-                    printLabirint(board, score, xSize, ySize);
+                if(board[currentPosition-xSize].symbol != '#'){
+                    nextPosition = currentPosition - xSize;
+                    movesString[l] = 'N';
+                    l++;
+                    nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 }
-                else if (board[currentPosition - xSize].symbol=='_') { //se ho completato il percorso
-                    board[currentPosition].symbol= '.';
-                    board[currentPosition - xSize].symbol= 'o';
-                    (*score)--;
-                    //system("clear");
-                    printLabirint(board, score, xSize, ySize);
-                    success(score);
-                    endGame = 1;
-                }
-                /* else { //se la posizione sotto la posizione attuale è un muro o una parete
-                   death();
-                   endGame = 1;
-               }*/
                 break;
+
             case 1:
-                if (board[currentPosition +xSize].symbol==' ' || board[currentPosition + xSize].symbol=='.' || board[currentPosition +xSize].symbol=='$' || board[currentPosition +xSize].symbol=='!'){ //se la posizione sotto la posizione attuale è parte del labirinto
-                    board[currentPosition].symbol='.';
-                    if (board[currentPosition + xSize].symbol=='!'){ //se incontra un imprevisto
-                        *score -= coins*10/2; //toglie il punteggio
-                        coins = coins/2; //dimezza numero di monete
-                    }
-                    else if (board[currentPosition + xSize].symbol=='$'){ // se incontra una moneta
-                        *score += 10;
-                        coins ++;
-                    }
-                    else { //altrimenti
-                        (*score)--;
-                    }
-                    board[currentPosition + xSize].symbol='o';
-                    currentPosition = currentPosition + xSize; //nuova pos. attuale
-                    //system("clear");
-                    *movesString = 'S';
-                    movesString++;
-                    printLabirint(board, score, xSize, ySize);
+                if(board[currentPosition + xSize].symbol != '#'){
+                    nextPosition = currentPosition + xSize;
+                    movesString[l] = 'S';
+                    l++;
+                    nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 }
-                else if (board[currentPosition + xSize].symbol=='_') { //se ho completato il percorso
-                    board[currentPosition].symbol='.';
-                    board[currentPosition + xSize].symbol='o';
-                    (*score)--;
-                    //system("clear");
-                    printLabirint(board, score, xSize, ySize);
-                    success(score);
-                    endGame = 1;
-                }
-                /* else { //se la posizione sotto la posizione attuale è un muro o una parete
-                     death();
-                     endGame = 1;
-                 }*/
                 break;
+
             case 2:
-                if (board[currentPosition +1].symbol==' ' || board[currentPosition + 1].symbol=='.' || board[currentPosition +1].symbol=='$' || board[currentPosition +1].symbol=='!'){ //se la posizione a destra della posizione attuale è parte del labirinto
-                    board[currentPosition].symbol='.';
-                    if (board[currentPosition + 1].symbol=='!'){ //se incontra un imprevisto
-                        *score -= coins*10/2; //toglie il punteggio
-                        coins = coins/2; //dimezza numero di monete
-                    }
-                    else if (board[currentPosition + 1].symbol=='$'){ // se incontra una moneta
-                        *score += 10;
-                        coins ++;
-                    }
-                    else { //altrimenti
-                        (*score)--;
-                    }
-                    board[currentPosition + 1].symbol='o';
-                    currentPosition = currentPosition + 1; //nuova pos. attuale
-                    *movesString = 'E';
-                    movesString++;
-                    //system("clear");
-                    printLabirint(board, score, xSize, ySize);
+                if(board[currentPosition-1].symbol != '#'){
+                    nextPosition = currentPosition - 1;
+                    movesString[l] = 'O';
+                    l++;
+                    nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 }
-                else if (board[currentPosition + 1].symbol=='_') { //se ho completato il percorso
-                    board[currentPosition].symbol='.';
-                    board[currentPosition + 1].symbol='o';
-                    (*score)--;
-                    //system("clear");
-                    printLabirint(board, score, xSize, ySize);
-                    success(score);
-                    endGame = 1;
-                }
-                /*else { //se la posizione a destra della posizione attuale è un muro o una parete
-                    death();
-                    endGame = 1;
-                }*/
                 break;
+
             case 3:
-                if  (board[currentPosition - 1].symbol==' ' || board[currentPosition - 1].symbol=='.' || board[currentPosition -1].symbol=='$' || board[currentPosition -1].symbol=='!'){ //se la posizione a sinistra della posizione attuale è parte del labirinto
-                    board[currentPosition].symbol='.';
-                    if (board[currentPosition - 1].symbol=='!'){ //se incontra un imprevisto
-                        *score -= coins*10/2; //toglie il punteggio
-                        coins = coins/2; //dimezza numero di monete
-                    }
-                    else if (board[currentPosition - 1].symbol=='$'){ // se incontra una moneta
-                        *score += 10;
-                        coins ++;
-                    }
-                    else { //altrimenti
-                        (*score)--;
-                    }
-                    board[currentPosition - 1].symbol='o';
-                    currentPosition = currentPosition - 1; //nuova pos. attuale
-                    //system("clear");
-                    *movesString = 'O';
-                    movesString++;
-                    printLabirint(board, score, xSize, ySize);
+                if(board[currentPosition+1].symbol != '#'){
+                    nextPosition = currentPosition + 1;
+                    movesString[l] = 'E';
+                    l++;
+                    nextMove(board, currentPosition, nextPosition, score, coins, endGame, drillPoints, xSize, ySize, snake);
                 }
-                else if (board[currentPosition - 1].symbol=='_') { //se ho completato il percorso
-                    board[currentPosition].symbol='.';
-                    board[currentPosition - 1].symbol='o';
-                    (*score)--;
-                    //system("clear");
-                    printLabirint(board, score, xSize, ySize);
-                    success(score);
-                    endGame = 1;
-                }
-                /*else { //se la posizione a sinistra della posizione attuale è un muro o una parete
-                    death();
-                    endGame = 1;
-                }*/
-                break;
-            default:
-                wrongInput();
                 break;
         }
-    }
-    while(!endGame);
-    *movesString = '\0';
+        currentPosition = nextPosition; //nuova pos. attuale
+        printLabirint(board, score, xSize, ySize);
+    }while(!(*endGame));
+    
 }
 
 void visitNextNode(Box* board, int currentPos, int nextPos, int* end, size_t xSize, int* xDist, int* yDist, _Bool* arrived){ //realizza la visita di un nodo del labirinto
@@ -737,6 +636,7 @@ void visitFirstNode(Box* board, int start, int nextPos, int* end, size_t xSize, 
 }
 
 void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesString, size_t xSize, size_t ySize, vector_t *snake){
+    
     for (int i =0; i<xSize*ySize; i++){ //inizializza tutti i nodi come non visitati e non esplorati
         board[i].visited=0;
         board[i].extracted=0;
@@ -955,13 +855,13 @@ int inputBoard(Box *board, int start, int* end, size_t xSize, size_t ySize){ //p
     return start;
 }
 
-void challenge(Box *board, int start, int* end, int *score, size_t xSize, size_t ySize, char* movesString, vector_t *snake){ //permette di svolgere le challenge assegnate dal professore durante il corso
+/*void challenge(Box *board, int start, int* end, int *score, size_t xSize, size_t ySize, char* movesString, vector_t *snake){ //permette di svolgere le challenge assegnate dal professore durante il corso
     printf("MODALITA' SFIDA!\n");
-    scanf(" %d", &xSize);
-    scanf(" %d", &ySize);
+    scanf(" %ld", &xSize);
+    scanf(" %ld", &ySize);
     start = inputBoard(board, start, end, xSize, ySize);
-    aStarAlgorithm(board, start, end, score, movesString, xSize, ySize, snake);
-}
+    aStarAlgorithm(board, start, end, score, movesString, xSize, ySize, snake, isRandom);
+}*/
 
 int main(int argc, char *argv[]){
     int* end = (int*)malloc(sizeof(int));
@@ -981,7 +881,7 @@ int main(int argc, char *argv[]){
     _Bool wrongChar = 1;
     while (wrongChar){ //finché l'input dato è fuori dal range 3-40
         printf("Larghezza:");
-        scanf(" %d", &xSize);
+        scanf(" %ld", &xSize);
         if (xSize<3){
             printf("Dimensione troppo piccola, reinserirla.\n");
         }
@@ -993,7 +893,7 @@ int main(int argc, char *argv[]){
     wrongChar = 1;
     while (wrongChar){ //finché l'input dato è fuori dal range 3-40
         printf("Altezza:");
-        scanf(" %d", &ySize);
+        scanf(" %ld", &ySize);
         if (ySize<3){
             printf("Dimensione troppo piccola, reinserirla.\n");
         }
@@ -1026,13 +926,14 @@ int main(int argc, char *argv[]){
             wrongInput();
         }
 
+        
         printf("\n");
         mode(); //chiede all'utente in che modalità vuole giocare
         wrongChar = 1;
         while (wrongChar){
             scanf(" %c", &choose);
             printf("\n");
-            if(choose== '1') { //se vuole utilizzare la modalità utente
+            if(choose == '1') { //se vuole utilizzare la modalità utente
                 guide();
                 moving(board, start, score, moves, xSize, ySize, snake);
                 wrongChar=0;
