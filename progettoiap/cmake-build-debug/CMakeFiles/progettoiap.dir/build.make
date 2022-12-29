@@ -52,10 +52,10 @@ RM = "C:\Program Files\JetBrains\CLion 2021.2.3\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\ilmio\Desktop\progettoiap
+CMAKE_SOURCE_DIR = C:\Users\ilmio\Desktop\UNI\IaP\progettoiap
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/progettoiap.dir/depend.make
@@ -68,30 +68,30 @@ include CMakeFiles/progettoiap.dir/flags.make
 CMakeFiles/progettoiap.dir/dvector.c.obj: CMakeFiles/progettoiap.dir/flags.make
 CMakeFiles/progettoiap.dir/dvector.c.obj: CMakeFiles/progettoiap.dir/includes_C.rsp
 CMakeFiles/progettoiap.dir/dvector.c.obj: ../dvector.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/progettoiap.dir/dvector.c.obj"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\progettoiap.dir\dvector.c.obj -c C:\Users\ilmio\Desktop\progettoiap\dvector.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/progettoiap.dir/dvector.c.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\progettoiap.dir\dvector.c.obj -c C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\dvector.c
 
 CMakeFiles/progettoiap.dir/dvector.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/progettoiap.dir/dvector.c.i"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\ilmio\Desktop\progettoiap\dvector.c > CMakeFiles\progettoiap.dir\dvector.c.i
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\dvector.c > CMakeFiles\progettoiap.dir\dvector.c.i
 
 CMakeFiles/progettoiap.dir/dvector.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/progettoiap.dir/dvector.c.s"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\progettoiap\dvector.c -o CMakeFiles\progettoiap.dir\dvector.c.s
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\dvector.c -o CMakeFiles\progettoiap.dir\dvector.c.s
 
 CMakeFiles/progettoiap.dir/main.c.obj: CMakeFiles/progettoiap.dir/flags.make
 CMakeFiles/progettoiap.dir/main.c.obj: CMakeFiles/progettoiap.dir/includes_C.rsp
 CMakeFiles/progettoiap.dir/main.c.obj: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/progettoiap.dir/main.c.obj"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\progettoiap.dir\main.c.obj -c C:\Users\ilmio\Desktop\progettoiap\main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/progettoiap.dir/main.c.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\progettoiap.dir\main.c.obj -c C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\main.c
 
 CMakeFiles/progettoiap.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/progettoiap.dir/main.c.i"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\ilmio\Desktop\progettoiap\main.c > CMakeFiles\progettoiap.dir\main.c.i
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\main.c > CMakeFiles\progettoiap.dir\main.c.i
 
 CMakeFiles/progettoiap.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/progettoiap.dir/main.c.s"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\progettoiap\main.c -o CMakeFiles\progettoiap.dir\main.c.s
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\main.c -o CMakeFiles\progettoiap.dir\main.c.s
 
 # Object files for target progettoiap
 progettoiap_OBJECTS = \
@@ -107,7 +107,7 @@ progettoiap.exe: CMakeFiles/progettoiap.dir/build.make
 progettoiap.exe: CMakeFiles/progettoiap.dir/linklibs.rsp
 progettoiap.exe: CMakeFiles/progettoiap.dir/objects1.rsp
 progettoiap.exe: CMakeFiles/progettoiap.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable progettoiap.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable progettoiap.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\progettoiap.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -119,6 +119,6 @@ CMakeFiles/progettoiap.dir/clean:
 .PHONY : CMakeFiles/progettoiap.dir/clean
 
 CMakeFiles/progettoiap.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\ilmio\Desktop\progettoiap C:\Users\ilmio\Desktop\progettoiap C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug C:\Users\ilmio\Desktop\progettoiap\cmake-build-debug\CMakeFiles\progettoiap.dir\DependInfo.cmake --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\ilmio\Desktop\UNI\IaP\progettoiap C:\Users\ilmio\Desktop\UNI\IaP\progettoiap C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug C:\Users\ilmio\Desktop\UNI\IaP\progettoiap\cmake-build-debug\CMakeFiles\progettoiap.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/progettoiap.dir/depend
 

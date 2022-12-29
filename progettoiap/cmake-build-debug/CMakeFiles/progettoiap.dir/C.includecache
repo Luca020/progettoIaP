@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/ilmio/Desktop/progettoiap/dvector.h
+C:/Users/ilmio/Desktop/UNI/IaP/progettoiap/dvector.h
 
-C:/Users/ilmio/Desktop/progettoiap/main.c
+C:/Users/ilmio/Desktop/UNI/IaP/progettoiap/main.c
 stdio.h
 -
 stdlib.h
@@ -18,5 +18,5 @@ time.h
 string.h
 -
 dvector.h
-C:/Users/ilmio/Desktop/progettoiap/dvector.h
+C:/Users/ilmio/Desktop/UNI/IaP/progettoiap/dvector.h
 

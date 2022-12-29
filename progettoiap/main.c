@@ -380,13 +380,13 @@ void wrongInput(){ //il giocatore ha inserito un input non corretto
     printf("Input non corretto, reinserirlo.\n");
 }
 
-void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int* coins, _Bool* endGame, int* drillPoints, size_t xSize, size_t ySize, vector_t* snake ){ //prossima mossa della moving
+void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int* coins, _Bool* endGame, int* drillPoints, size_t xSize, size_t ySize, vector_t* snake){ //prossima mossa della moving
     (*score)--;
     if (nextPosition < 0 || nextPosition>=xSize*ySize){ //se esce dalla parete superiore o inferiore
         death();
     }
     else {
-        if ((board[nextPosition].symbol=='#')) { //se la nextPosition è un muro o una parete
+        if (board[nextPosition].symbol=='#') { //se la nextPosition è un muro o una parete
             if(*drillPoints>0){ //se ho drillPoints
                 v_push_back(snake, nextPosition);
                 board[v_get(snake, 0)].symbol = ' ';
@@ -457,7 +457,6 @@ void nextMove(Box* board, int currentPosition, int nextPosition, int *score, int
     }
 }
 
-
 void moving (Box* board, int start, int *score, char* movesString, size_t xSize, size_t ySize, vector_t* snake){ //muove il serpente
     char move;
     int currentPosition = start;
@@ -472,7 +471,8 @@ void moving (Box* board, int start, int *score, char* movesString, size_t xSize,
     int* drillPoints = (int*)malloc(sizeof(int));
     *drillPoints=0;
     int l = 0; //scorre l'array di mosse movesString
-    do{ 
+    do{
+        scanf(" %c", &move);
         switch(move){
             case 'W': //se il giocatore va verso l'alto
             case 'w':
@@ -545,7 +545,7 @@ void randomAlgorithm(Box* board, int start, int *score, char* movesString, size_
     *drillPoints=0;
     int l = 0; //scorre l'array di mosse movesString
     printLabirint(board, score, xSize, ySize);
-    do{ 
+    do{
         int move = rand()%4;
         switch(move){
             case 0:
@@ -587,7 +587,6 @@ void randomAlgorithm(Box* board, int start, int *score, char* movesString, size_
         currentPosition = nextPosition; //nuova pos. attuale
         printLabirint(board, score, xSize, ySize);
     }while(!(*endGame));
-    
 }
 
 void visitNextNode(Box* board, int currentPos, int nextPos, int* end, size_t xSize, int* xDist, int* yDist, _Bool* arrived){ //realizza la visita di un nodo del labirinto
@@ -636,7 +635,6 @@ void visitFirstNode(Box* board, int start, int nextPos, int* end, size_t xSize, 
 }
 
 void aStarAlgorithm(Box* board, int start, int* end, int* score, char* movesString, size_t xSize, size_t ySize, vector_t *snake){
-    
     for (int i =0; i<xSize*ySize; i++){ //inizializza tutti i nodi come non visitati e non esplorati
         board[i].visited=0;
         board[i].extracted=0;
@@ -855,13 +853,13 @@ int inputBoard(Box *board, int start, int* end, size_t xSize, size_t ySize){ //p
     return start;
 }
 
-/*void challenge(Box *board, int start, int* end, int *score, size_t xSize, size_t ySize, char* movesString, vector_t *snake){ //permette di svolgere le challenge assegnate dal professore durante il corso
+void challenge(Box *board, int start, int* end, int *score, size_t xSize, size_t ySize, char* movesString, vector_t *snake){ //permette di svolgere le challenge assegnate dal professore durante il corso
     printf("MODALITA' SFIDA!\n");
-    scanf(" %ld", &xSize);
-    scanf(" %ld", &ySize);
+    scanf(" %d", &xSize);
+    scanf(" %d", &ySize);
     start = inputBoard(board, start, end, xSize, ySize);
-    aStarAlgorithm(board, start, end, score, movesString, xSize, ySize, snake, isRandom);
-}*/
+    aStarAlgorithm(board, start, end, score, movesString, xSize, ySize, snake);
+}
 
 int main(int argc, char *argv[]){
     int* end = (int*)malloc(sizeof(int));
@@ -881,7 +879,7 @@ int main(int argc, char *argv[]){
     _Bool wrongChar = 1;
     while (wrongChar){ //finché l'input dato è fuori dal range 3-40
         printf("Larghezza:");
-        scanf(" %ld", &xSize);
+        scanf(" %d", &xSize);
         if (xSize<3){
             printf("Dimensione troppo piccola, reinserirla.\n");
         }
@@ -893,7 +891,7 @@ int main(int argc, char *argv[]){
     wrongChar = 1;
     while (wrongChar){ //finché l'input dato è fuori dal range 3-40
         printf("Altezza:");
-        scanf(" %ld", &ySize);
+        scanf(" %d", &ySize);
         if (ySize<3){
             printf("Dimensione troppo piccola, reinserirla.\n");
         }
@@ -926,14 +924,13 @@ int main(int argc, char *argv[]){
             wrongInput();
         }
 
-        
         printf("\n");
         mode(); //chiede all'utente in che modalità vuole giocare
         wrongChar = 1;
         while (wrongChar){
             scanf(" %c", &choose);
             printf("\n");
-            if(choose == '1') { //se vuole utilizzare la modalità utente
+            if(choose== '1') { //se vuole utilizzare la modalità utente
                 guide();
                 moving(board, start, score, moves, xSize, ySize, snake);
                 wrongChar=0;

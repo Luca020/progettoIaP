@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/ilmio/Desktop/progettoiap
+# Install script for directory: C:/Users/ilmio/Desktop/UNI/IaP/progettoiap
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/ilmio/Desktop/progettoiap/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/ilmio/Desktop/UNI/IaP/progettoiap/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
